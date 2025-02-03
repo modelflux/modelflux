@@ -36,6 +36,23 @@ make
 - push (future)
 - explore (future)
 
+### Service (future)
+
+Abstract CLI backend to be REST/GRPC compliant
+
+### SDK (future)
+
+Add SDK for popular languages using the service to allow programmatic integrations
+
+### Server
+
+- Landing page
+- Workflow hub
+- Tools hub
+- Model actions hub (future)
+- User accounts (future)
+- Run workflows on our servers (future)
+
 ### Nodes (each with inputs/outputs)
 
 - Base models
