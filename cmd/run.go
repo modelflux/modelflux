@@ -1,6 +1,9 @@
 package main
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/orelbn/tbd/pkg/run"
 	"github.com/spf13/cobra"
 )
@@ -16,7 +19,13 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		run.Run()
+		if len(args) != 1 {
+			fmt.Println("error: invalid number of arguments")
+			fmt.Println("usage: tbd run <workflow-name>")
+			os.Exit(1)
+		}
+		name := args[0]
+		run.Run(name)
 	},
 }
 
