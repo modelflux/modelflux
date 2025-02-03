@@ -73,6 +73,11 @@ Add SDK for popular languages using the service to allow programmatic integratio
 
 ### Sample workflow/compose .yaml file
 
+Points of inspiration:
+
+- Docker compose. eg: [golang nginx mysql compose](https://github.com/docker/awesome-compose/blob/master/nginx-golang-mysql/compose.yaml)
+- Github actions. eg: [aws deployment actions](https://github.com/actions/starter-workflows/blob/main/deployments/aws.yml)
+
 ```yaml
 models:
   model-1:
