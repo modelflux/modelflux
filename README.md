@@ -9,13 +9,13 @@ Get go and make if you don't already have them
 brew install go make
 ```
 
-Run with
+Run the application with
 
 ```bash
-make
+go run ./cmd
 ```
 
-Build with
+Build the application with
 
 ```bash
 # in the project directory
