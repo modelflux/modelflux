@@ -13,6 +13,8 @@ Run the application with
 
 ```bash
 go run ./cmd
+# Eg. use the 'pull' command
+go run ./cmd pull
 ```
 
 Build the application with
