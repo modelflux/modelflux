@@ -63,6 +63,9 @@ Add SDK for popular languages using the service to allow programmatic integratio
 - Model actions
   - Summary
   - Decision
+  - Categorization
+  - Select tool to use
+  - Custom
   - Monitor (agent)
 - Tools
 - Triggers
