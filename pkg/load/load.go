@@ -12,12 +12,13 @@ type WorkflowSchema struct {
     Name     string           `yaml:"name"`
     Models   map[string]Model `yaml:"models"`
     Tools    map[string]Tool  `yaml:"tools"`
-    Trigger  Trigger          `yaml:"trigger"`
+    Trigger  []Trigger        `yaml:"trigger"`
     Task     Task             `yaml:"task"`
 }
 
 type Model struct {
-    Key        string `yaml:"key"`
+    Type       string `yaml:"type"`
+    ApiKey     string `yaml:"api-key,omitempty"`
     ModelClass string `yaml:"model-class,omitempty"`
     Endpoint   string `yaml:"endpoint,omitempty"`
 }
