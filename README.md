@@ -3,22 +3,25 @@
 Recommend getting the go extension for vscode.
 Go has a built in linter/formatter
 
-Get go with homebrew
+Get go and make if you don't already have them
 
 ```bash
-brew install go
+brew install go make
 ```
 
-Run with
+Run the application with
 
 ```bash
-go run main.go
+go run ./cmd
+# Eg. use the 'pull' command
+go run ./cmd pull
 ```
 
-Build with
+Build the application with
 
 ```bash
-go build
+# in the project directory
+make build
 # run binary directly
-./tbd
+./_output/bin/tbd
 ```
