@@ -1,26 +1,45 @@
 package run
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 
 	"github.com/orelbn/tbd/pkg/load"
+	"github.com/orelbn/tbd/pkg/model"
 )
 
 func Run(workflowName string) {
-	// Get the workflow file
 	fmt.Println("run called")
-	
-	workflow := load.Load(workflowName) // or your workflow name
-    if workflow == nil {
-        log.Fatal("Workflow loading failed.")
-    }
+	workflow := load.Load(workflowName)
+	if workflow == nil {
+		log.Fatal("Workflow loading failed.")
+	}
 
-    pretty, err := json.MarshalIndent(workflow, "", "  ")
-    if err != nil {
-        log.Fatal("Error pretty printing:", err)
-    }
+	// Pretty print workflow
+	fmt.Printf("%+v\n", workflow)
 
-    fmt.Println(string(pretty))
+	// TODO: Validate the workflow schema
+
+	for _, step := range workflow.Task.Steps {
+		fmt.Println("Running step:", step.Name)
+
+		var m model.Model
+
+		if step.Model != "" {
+			// Load the model if the model type is ollama
+			modelType := workflow.Models[step.Model].Type
+
+			if modelType == "ollama" {
+				m = &model.OllamaModel{}
+				m.New()
+			}
+		}
+
+		prompt := step.Parameters["prompt"]
+		// Execute the prompt
+		if step.Parameters["prompt"] != "" {
+			fmt.Println("Prompt:", step.Parameters["prompt"])
+			model.Generate(models.PartialGenerateRequest{Prompt: prompt})
+		}
+	}
 }

@@ -1,32 +1,16 @@
-name: "Analyze transactions"
+name: "Simple Example - Generate Output"
 models:
   deep-seek:
     type: "ollama"
     model: "deepseek-r1:7b"
-tools:
-  csv-reader:
-    use: "modelflow-tools/csv-reader@1"  
+  llama:
+    type: "ollama"
+    model: "llama2:1b"
 task:
-  name: "Categorize transactions and Calculate Totals"
+  name: "Generate Output"
   steps:
-    - name: "Read CSV file"
-      id: "read-csv"
-      tool: "csv-reader"
-      parameters:
-        path: "@home/transactions.csv"
-      outputs: {
-        data: { $ref }
-      }
-    - name: "Categorize transactions"
+    - name: "Generate Output"
       model: "deep-seek"
+      id: "step-1"
       parameters:
-        prompt: "Categorize transactions and Calculate Totals"
-        examples: [
-          { "transaction": "Grocery", "category": "Food" },
-          { "transaction": "Gas", "category": "Transportation" },
-          { "transaction": "Rent", "category": "Housing" }
-        ]
-        data: { $step: read-csv.outputs.data }
-        outputs: {
-          file: "@home/transaction.txt"
-        }
+        prompt: "What is 1+1 equal?"
