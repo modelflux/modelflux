@@ -1,28 +1,32 @@
-name: "Example Workflow"
+name: "Analyze transactions"
 models:
-  model-1:
-    key: "shxxxxxxx"
-    model-class: "4o"
-  model-2:
-    key: "xdkfjksdjf"
-    endpoint: "http://example.com/v1/"
+  deep-seek:
+    type: "ollama"
+    model: "deepseek-r1:7b"
 tools:
-  tool-1:
-    type: "web-browser-v0.2"
-    endpoint: "http://localhost:8080"
-    key: "toolkey123"
-trigger:
-  time:
-    at: "2025-03-21 22:33:33"
-    repeat: "daily"
+  csv-reader:
+    use: "modelflow-tools/csv-reader@1"  
 task:
-  name: "Main Task"
+  name: "Categorize transactions and Calculate Totals"
   steps:
-    - name: "step1"
-      model: "model-1"
-      input: "Initial input"
-      output: "Output from step1"
-    - name: "step2"
-      tool: "tool-1"
-      input: "{{task.steps.step1.output}}"
-      output: "Final result"
+    - name: "Read CSV file"
+      id: "read-csv"
+      tool: "csv-reader"
+      parameters:
+        path: "@home/transactions.csv"
+      outputs: {
+        data: { $ref }
+      }
+    - name: "Categorize transactions"
+      model: "deep-seek"
+      parameters:
+        prompt: "Categorize transactions and Calculate Totals"
+        examples: [
+          { "transaction": "Grocery", "category": "Food" },
+          { "transaction": "Gas", "category": "Transportation" },
+          { "transaction": "Rent", "category": "Housing" }
+        ]
+        data: { $step: read-csv.outputs.data }
+        outputs: {
+          file: "@home/transaction.txt"
+        }

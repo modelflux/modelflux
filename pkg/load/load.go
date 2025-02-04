@@ -31,9 +31,7 @@ type AzureOpenAIModel struct {
 }
 
 type Tool struct {
-	Key         string            `yaml:"key"`
 	Source      string            `yaml:"source"`
-	Type        string            `yaml:"type"`
 	ToolOptions map[string]string `yaml:"toolOptions"`
 }
 
@@ -43,11 +41,12 @@ type Task struct {
 }
 
 type Step struct {
-	Name   string `yaml:"name"`
-	Model  string `yaml:"model,omitempty"`
-	Tool   string `yaml:"tool,omitempty"`
-	Input  string `yaml:"input,omitempty"`
-	Output string `yaml:"output,omitempty"`
+	Name       string            `yaml:"name"`
+	ID         string            `yaml:"id,omitempty"`
+	Model      string            `yaml:"model,omitempty"`
+	Tool       string            `yaml:"tool,omitempty"`
+	Parameters map[string]string `yaml:"parameters,omitempty"`
+	Output     string            `yaml:"output,omitempty"`
 }
 
 func loadYAML(filePath string) (*WorkflowSchema, error) {
@@ -68,11 +67,12 @@ func loadYAML(filePath string) (*WorkflowSchema, error) {
 // ResolvePlaceholders resolves placeholders in task parameters
 func ResolvePlaceholders(workflow *WorkflowSchema) {
 	for j, step := range workflow.Task.Steps {
-		if step.Input != "" && strings.Contains(step.Input, "{{") && strings.Contains(step.Input, "}}") {
-			// Example: "{{task.steps.step1.output}}"
-			// Resolve the placeholder here
-			// This is a simplified example, you would need to implement the actual logic
-			workflow.Task.Steps[j].Input = resolvePlaceholder(workflow, step.Input)
+		if step.Parameters != nil {
+			for k, v := range step.Parameters {
+				if strings.Contains(v, "{{") {
+					workflow.Task.Steps[j].Parameters[k] = resolvePlaceholder(workflow, v)
+				}
+			}
 		}
 	}
 }
@@ -98,6 +98,15 @@ func Load(workflowName string) *WorkflowSchema {
 	workflowPath := fmt.Sprintf("workflows/%s.yaml", workflowName)
 	fmt.Println("Loading workflow:", workflowPath)
 	workflow, err := loadYAML(workflowPath)
+
+	// A step can contain only a model or a tool, not both
+	for _, step := range workflow.Task.Steps {
+		if step.Model != "" && step.Tool != "" {
+			fmt.Println("Error in step:", step.Name)
+			fmt.Println("Error: A step can contain only a model or a tool, not both.")
+			return nil
+		}
+	}
 	if err != nil {
 		fmt.Println("Error loading YAML:", err)
 		return nil
