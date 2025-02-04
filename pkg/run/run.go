@@ -15,9 +15,6 @@ func Run(workflowName string) {
 		log.Fatal("Workflow loading failed.")
 	}
 
-	// Pretty print workflow
-	fmt.Printf("%+v\n", workflow)
-
 	// TODO: Validate the workflow schema
 
 	for _, step := range workflow.Task.Steps {
@@ -30,8 +27,10 @@ func Run(workflowName string) {
 			modelType := workflow.Models[step.Model].Type
 
 			if modelType == "ollama" {
-				m = &model.OllamaModel{}
-				m.New()
+				m = &model.OllamaModel{Model: workflow.Models[step.Model].Model}
+				m.New(nil)
+				// Add space to output to make it easier to read
+				fmt.Println(" ")
 			}
 		}
 
@@ -39,7 +38,12 @@ func Run(workflowName string) {
 		// Execute the prompt
 		if step.Parameters["prompt"] != "" {
 			fmt.Println("Prompt:", step.Parameters["prompt"])
-			model.Generate(models.PartialGenerateRequest{Prompt: prompt})
+			response, err := m.Generate(prompt)
+			if err != nil {
+				log.Fatal(err)
+			}
+			fmt.Println("Response:", response)
+			fmt.Println(" ")
 		}
 	}
 }

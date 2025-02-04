@@ -3,14 +3,14 @@ models:
   deep-seek:
     type: "ollama"
     model: "deepseek-r1:7b"
-  llama:
+  llama-small:
     type: "ollama"
-    model: "llama2:1b"
+    model: "llama3.2:1b"
 task:
   name: "Generate Output"
   steps:
     - name: "Generate Output"
-      model: "deep-seek"
+      model: "llama-small"
       id: "step-1"
       parameters:
         prompt: "What is 1+1 equal?"
