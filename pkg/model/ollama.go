@@ -25,7 +25,7 @@ func (o *OllamaModel) New(cfg *viper.Viper) error {
 
 	fmt.Printf("Checking if model %s is downloaded: ", o.Model)
 
-	var isDownloaded bool = false
+	isDownloaded := false
 
 	resp, err := client.List(ctx)
 
@@ -44,14 +44,14 @@ func (o *OllamaModel) New(cfg *viper.Viper) error {
 	}
 
 	fmt.Println("Model not downloaded, downloading now")
-	var progress int64 = 0
+	progress := 0
 	progressFunc := func(resp api.ProgressResponse) error {
-		var status string = resp.Status
+		status := resp.Status
 		// Handle total being 0
 		if resp.Total == 0 {
 			fmt.Printf("Status: %s\n", status)
 		} else {
-			val := resp.Completed * 100 / resp.Total
+			val := int(resp.Completed * 100 / resp.Total)
 			if val != progress && val%10 == 0 {
 				fmt.Printf("Status: %s, Progress: %d%%\n", status, val)
 				progress = val
@@ -82,8 +82,7 @@ func (o *OllamaModel) Generate(input string) (string, error) {
 
 	ctx := context.TODO()
 
-	// Save the response to a variable
-	var response string
+	response := ""
 	respFunc := func(resp api.GenerateResponse) error {
 		response = resp.Response
 		return nil
