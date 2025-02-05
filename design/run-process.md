@@ -12,7 +12,6 @@ mf run [flags] WORKFLOWNAME
 
 ```text
     -h, --help   help for run
-    --validate   Validate the workflow file
     --verbose    Verbose output
 ```
 
