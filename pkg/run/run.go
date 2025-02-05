@@ -85,7 +85,10 @@ func Run(workflowName string) {
 					}
 
 					m := &model.OllamaModel{Model: modelName}
-					m.New(nil)
+					err := m.New(nil)
+					if err != nil {
+						log.Fatal(err)
+					}
 
 					prompt := step.Parameters["prompt"].(string)
 					output, err := m.Generate(prompt)
