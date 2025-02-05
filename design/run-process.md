@@ -23,7 +23,7 @@ Run the workflow in the following sequence of steps:
 ```mermaid
 graph TD;
     A[Parse the workflow file] --> B[Validate the Workflow Schema]
-    B --> C[Initialize Tools and Models]
+    B --> C[Initialize dependencies]
     C --> D[Run the Workflow]
 ```
 
