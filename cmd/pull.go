@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/orelbn/tbd/pkg/pull"
+	"github.com/modelflux/cli/pkg/pull"
 	"github.com/spf13/cobra"
 )
 

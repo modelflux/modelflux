@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/orelbn/tbd/pkg/config"
+	"github.com/modelflux/cli/pkg/config"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -16,8 +16,8 @@ var Config = viper.New()
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "tbd",
-	Short: "tbd: Run hundreds of AI workflows right from the command line.",
+	Use:   "mf",
+	Short: "modelflux: Run hundreds of AI workflows right from the command line.",
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },

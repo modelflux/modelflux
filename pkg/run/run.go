@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/orelbn/tbd/pkg/load"
-	"github.com/orelbn/tbd/pkg/model"
+	"github.com/modelflux/cli/pkg/load"
+	"github.com/modelflux/cli/pkg/model"
 )
 
 func Run(workflowName string) {

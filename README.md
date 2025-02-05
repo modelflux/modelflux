@@ -1,4 +1,4 @@
-# tbd
+# modelflux
 
 Recommend getting the go extension for vscode.
 Go has a built in linter/formatter
@@ -23,7 +23,7 @@ Build the application with
 # in the project directory
 make
 # run binary directly
-./_output/bin/tbd
+./_output/bin/mf
 ```
 
 ## Project Plan
