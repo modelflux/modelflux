@@ -1,6 +1,6 @@
 OUTDIR ?= $(CURDIR)/_output
-BINARYNAME ?= tbd
-PACKAGE := github.com/orelbn/tbd
+BINARYNAME ?= mf
+PACKAGE := github.com/modelflux/cli
 
 build:
 	go build -o $(OUTDIR)/bin/$(BINARYNAME) $(PACKAGE)/cmd

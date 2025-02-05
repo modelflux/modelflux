@@ -1,22 +1,18 @@
 package main
 
 import (
-	"github.com/orelbn/tbd/pkg/run"
+	"github.com/modelflux/cli/pkg/run"
 	"github.com/spf13/cobra"
 )
 
 // runCmd represents the run command
 var runCmd = &cobra.Command{
-	Use:   "run",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Use:   "run [workflowName]",
+	Short: "Runs a workflow file",
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		run.Run()
+		name := args[0]
+		run.Run(name)
 	},
 }
 
