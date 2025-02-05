@@ -5,12 +5,9 @@ import (
 	"os"
 	"path"
 
-	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
-
-var fs = afero.NewOsFs()
 
 type Config struct {
 	Model map[string]string `yaml:"model"`
@@ -23,7 +20,7 @@ func InitConfig(cfg *viper.Viper) {
 	home, err := os.UserHomeDir()
 	cobra.CheckErr(err)
 
-	var configPath = path.Join(home, ".mf")
+	var configPath = path.Join(home, ".modelflux")
 
 	cfg.AddConfigPath(configPath)
 	cfg.SetConfigType("yaml")
@@ -39,7 +36,7 @@ func InitConfig(cfg *viper.Viper) {
 				"deployment": "",
 				"version":    "",
 			})
-			if err := fs.MkdirAll(configPath, os.ModePerm); err != nil {
+			if err := os.MkdirAll(configPath, os.ModePerm); err != nil {
 				fmt.Println("Failed to create config directory, ", err)
 			}
 			if err := cfg.WriteConfigAs(path.Join(configPath, "config.yaml")); err != nil {
