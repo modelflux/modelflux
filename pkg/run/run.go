@@ -28,7 +28,11 @@ func Run(workflowName string) {
 
 			if modelType == "ollama" {
 				m = &model.OllamaModel{Model: workflow.Models[step.Model].Model}
-				m.New(nil)
+				err := m.New(nil)
+				if err != nil {
+					fmt.Errorf("failed to load model: %s", err)
+					return
+				}
 				// Add space to output to make it easier to read
 				fmt.Println(" ")
 			}

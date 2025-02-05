@@ -15,9 +15,11 @@ type OllamaModel struct {
 
 func (o *OllamaModel) New(cfg *viper.Viper) error {
 	client, err := api.ClientFromEnvironment()
+
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
+
 	ctx := context.Background()
 	req := &api.PullRequest{
 		Model: o.Model,
@@ -62,7 +64,7 @@ func (o *OllamaModel) New(cfg *viper.Viper) error {
 
 	err = client.Pull(ctx, req, progressFunc)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	return nil
 }
