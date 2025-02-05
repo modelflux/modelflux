@@ -23,7 +23,7 @@ func InitConfig(cfg *viper.Viper) {
 	home, err := os.UserHomeDir()
 	cobra.CheckErr(err)
 
-	var configPath = path.Join(home, ".tbd")
+	var configPath = path.Join(home, ".mf")
 
 	cfg.AddConfigPath(configPath)
 	cfg.SetConfigType("yaml")

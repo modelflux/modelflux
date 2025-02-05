@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/orelbn/tbd/pkg/model"
+	"github.com/modelflux/cli/pkg/model"
 	"github.com/spf13/cobra"
 )
 
