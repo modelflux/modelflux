@@ -1,0 +1,18 @@
+name: "Simple Example - Generate Output"
+models:
+  llama-small:
+    type: "ollama"
+    model: "llama3.2:1b"
+actions:
+  summarize:
+    type: summarize
+  classify:
+    type: classify
+  custom:
+    type: custom
+
+task:
+  name: "Test out actions"
+  steps:
+    - run: summarize
+      parameters:
