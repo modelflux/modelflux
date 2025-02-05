@@ -1,16 +1,34 @@
 name: "Simple Example - Generate Output"
 models:
   deep-seek:
-    type: "ollama"
-    model: "deepseek-r1:7b"
+    identifier: "ollama"
+    options:
+      model: "deepseek-r1:7b"
   llama-small:
-    type: "ollama"
-    model: "llama3.2:1b"
+    identifier: "ollama"
+    options:
+      model: "llama3.2:1b"
+tools:
+  read-me:
+    identifier: "text-file-reader"
+  write-me:
+    identifier: "text-file-writer"
 task:
-  name: "Generate Output"
+  name: "Summarize Read Me"
   steps:
     - name: "Generate Output"
       model: "llama-small"
       id: "step-1"
       parameters:
         prompt: "What is 1+1 equal?"
+    - name: "Read the Read Me File"
+      tool: "read-me"
+      id: "step-2"
+      parameters:
+        filepath: "README.md"
+    - name: "Write the Read Me Summary"
+      tool: "write-me"
+      id: "step-3"
+      parameters:
+        filepath: ".out/readme-summary.txt"
+        content: "# This is a summary of the Read Me file."
