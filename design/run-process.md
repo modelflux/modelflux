@@ -12,19 +12,26 @@ mf run [flags] WORKFLOWNAME
 
 ```text
     -h, --help   help for run
-    --dry-run    Dry run the workflow
+    --validate   Validate the workflow file
     --verbose    Verbose output
 ```
 
-## Design V0
+## Design V0.1
 
 Run the workflow in the following sequence of steps:
 
 ```mermaid
 graph TD;
-    A[Parse the workflow file] --> B[Validate the Workflow Schema]
-    B --> C[Initialize dependencies]
-    C --> D[Run the Workflow]
+    A[Parse the workflow file]
+    subgraph B ["Create Pipeline"]
+        direction LR 
+        B1[Validate the workflow schema]
+        B2[Generate a workflow graph]
+        B1 --> B2 --> B1
+    end
+    C[Initialize dependencies]
+    D[Run the workflow]
+    A --> B --> C --> D
 ```
 
 For simplicity, workflow steps will be run in sequence. In the future, we can allow for more dynamic pipelines: see [Future improvements](#future-improvements).
@@ -48,15 +55,20 @@ The workflow may take longer to start running as it has to go through the valida
 
 ### Considerations
 
-Should we prune any tools or models not used in the workflow? This could be a future optimization.
+- Can users re-run failed steps? This could be a future feature.
+- What happens if the user tries to interpret in the middle of a workflow run?
+
+
 
 
 ### Future improvements
 
+- [ ] Containerize workflows to avoid modifying the user's environment or system, and make it easier to throw away the environment after or during the workflow run
 - [ ] Allow for parallel execution of steps
 - [ ] Allow for looping
 - [ ] Allow for conditional execution of steps
 - [ ] Allow for dynamic generation of steps, tools, models, and actions
 - [ ] Allow for user input during the workflow run
 - [ ] Allow for user-defined functions to be used in the workflow
+- [ ] Prune the workflow graph to remove unnecessary items
 
