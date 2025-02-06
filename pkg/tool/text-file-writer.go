@@ -27,22 +27,25 @@ func (t *TextFileWriterTool) ValidateAndSetOptions(uOptions map[string]interface
 	return nil
 }
 
-func (t *TextFileWriterTool) ValidateAndSetParams(uParams map[string]interface{}) error {
-	var params textFileWriterParameters
-
-	// CreateStruct
+func (t *TextFileWriterTool) ValidateParameters(uParams map[string]interface{}) (interface{}, error) {
 	params, err := util.CreateStruct[textFileWriterParameters](uParams)
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
+	return params, nil
+}
+
+func (t *TextFileWriterTool) SetParameters(params interface{}) error {
+	p := params.(textFileWriterParameters)
+
 	// Additional checks.
-	if params.Filepath == "" {
+	if p.Filepath == "" {
 		return fmt.Errorf("missing filepath in text-file-writer parameters")
 	}
 
-	t.params = params
+	t.params = p
 
 	return nil
 }

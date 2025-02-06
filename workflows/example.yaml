@@ -1,11 +1,12 @@
-name: "Simple Example - Generate Output"
 models:
   deep-seek:
-    type: "ollama"
-    model: "deepseek-r1:7b"
+    identifier: "ollama"
+    options:
+      model: "deepseek-r1:7b"
   llama-small:
-    type: "ollama"
-    model: "llama3.2:1b"
+    identifier: "ollama"
+    options:
+      model: "llama3.2:1b"
 task:
   name: "Generate Output"
   steps:
@@ -14,3 +15,8 @@ task:
       id: "step-1"
       parameters:
         prompt: "What is 1+1 equal?"
+    - name: " Output"
+      model: "llama-small"
+      id: "step-2"
+      parameters:
+        prompt: "Is this step correct? {{step-1.output}}"

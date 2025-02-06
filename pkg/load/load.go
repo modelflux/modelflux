@@ -10,7 +10,6 @@ import (
 )
 
 type WorkflowSchema struct {
-	Name   string                              `yaml:"name"`
 	Models map[string]model.ModelConfiguration `yaml:"models"`
 	Tools  map[string]tool.ToolConfiguration   `yaml:"tools"`
 	Task   Task                                `yaml:"task"`
@@ -47,7 +46,7 @@ func loadYAML(filePath string) (*WorkflowSchema, error) {
 
 func Load(workflowName string) *WorkflowSchema {
 	workflowPath := fmt.Sprintf("workflows/%s.yaml", workflowName)
-	fmt.Println("Loading workflow:", workflowPath)
+	fmt.Println("Loading workflow:", workflowName)
 	workflow, err := loadYAML(workflowPath)
 	if err != nil {
 		fmt.Println("Error loading YAML:", err)

@@ -9,14 +9,14 @@ import (
 	"github.com/modelflux/cli/pkg/util"
 )
 
-type textFileReaderParams struct {
+type textFileReaderParameters struct {
 	Filepath string `yaml:"filepath"`
 }
 type textFileReaderOptions struct {
 }
 
 type TextFileReaderTool struct {
-	params  textFileReaderParams
+	params  textFileReaderParameters
 	options textFileReaderOptions
 }
 
@@ -25,25 +25,27 @@ func (t *TextFileReaderTool) ValidateAndSetOptions(uOptions map[string]interface
 	return nil
 }
 
-func (t *TextFileReaderTool) ValidateAndSetParameters(uParams map[string]interface{}) error {
-	var params textFileReaderParams
-
-	// Create a struct from the map using the util package.
-	params, err := util.CreateStruct[textFileReaderParams](uParams)
+func (t *TextFileReaderTool) ValidateParameters(uParams map[string]interface{}) (interface{}, error) {
+	params, err := util.CreateStruct[textFileReaderParameters](uParams)
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	// Additional checks
-	if params.Filepath == "" {
-		return fmt.Errorf("missing filepath in text-file-reader parameters")
+	return params, nil
+}
+
+func (t *TextFileReaderTool) SetParameters(params interface{}) error {
+	p := params.(textFileReaderParameters)
+
+	// Additional checks.
+	if p.Filepath == "" {
+		return fmt.Errorf("missing filepath in text-file-writer parameters")
 	}
 
-	t.params = params
+	t.params = p
 
 	return nil
-
 }
 
 // Run reads the file specified in the parameters and returns its content.

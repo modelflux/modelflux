@@ -30,7 +30,7 @@ type Model interface {
 	ValidateAndSetParameters(uParams map[string]interface{}) error
 }
 
-func BuildModel(mdata ModelConfiguration, cfg *viper.Viper) (Model, error) {
+func ValidateAndBuild(mdata ModelConfiguration, cfg *viper.Viper) (Model, error) {
 	var m Model
 	switch mdata.Identifier {
 	case "openai":

@@ -15,7 +15,7 @@ var chatCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		var input = args[0]
 		mcfg := model.ModelConfiguration{Identifier: Model}
-		m, err := model.BuildModel(mcfg, Config)
+		m, err := model.ValidateAndBuild(mcfg, Config)
 
 		if err != nil {
 			fmt.Printf("error building model: %v", err)

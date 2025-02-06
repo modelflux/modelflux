@@ -6,9 +6,11 @@ import (
 )
 
 func Run(workflowName string, cfg *viper.Viper) {
-	w, err := workflow.BuildWorkflow(workflowName, cfg).Load().Validate().Build()
+	wb := workflow.InitBuilder(cfg)
+	w, err := wb.Load(workflowName).ValidateAndBuild()
 	if err != nil {
 		panic(err)
 	}
+	w.Init()
 	w.Run()
 }

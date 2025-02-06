@@ -34,6 +34,8 @@ func (o *OllamaModel) ValidateAndSetOptions(uOptions map[string]interface{}, cfg
 		return fmt.Errorf("missing required option model for ollama model")
 	}
 
+	o.options = options
+
 	return nil
 }
 
@@ -48,11 +50,7 @@ func (o *OllamaModel) New() error {
 	if err != nil {
 		return err
 	}
-
 	ctx := context.Background()
-	req := &api.PullRequest{
-		Model: o.options.Model,
-	}
 
 	fmt.Printf("Checking if model %s is downloaded: ", o.options.Model)
 
@@ -72,6 +70,10 @@ func (o *OllamaModel) New() error {
 	if isDownloaded {
 		fmt.Println("Model already downloaded")
 		return nil
+	}
+
+	req := &api.PullRequest{
+		Model: o.options.Model,
 	}
 
 	fmt.Println("Model not downloaded, downloading now")

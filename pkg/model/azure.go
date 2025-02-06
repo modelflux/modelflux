@@ -35,6 +35,8 @@ func (m *AzureOpenAIModel) ValidateAndSetOptions(uOptions map[string]interface{}
 		m.options.Endpoint = mcfg["endpoint"]
 		m.options.Deployment = mcfg["deployment"]
 		m.options.Version = mcfg["version"]
+	} else {
+		m.options = options
 	}
 
 	if m.options.APIKey == "" || m.options.Endpoint == "" || m.options.Deployment == "" || m.options.Version == "" {
