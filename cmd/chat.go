@@ -14,18 +14,14 @@ var chatCmd = &cobra.Command{
 	Short: "Send a message to the model. This is just a test command.",
 	Run: func(cmd *cobra.Command, args []string) {
 		var input = args[0]
-		var m model.Model
+		mcfg := model.ModelConfiguration{Identifier: Model}
+		m, err := model.BuildModel(mcfg, Config)
 
-		if Model == "azure" {
-			m = &model.AzureOpenAIModel{}
-		} else if Model == "openai" {
-			m = &model.OpenAIModel{}
-		} else {
-			fmt.Printf("model %s not found", Model)
-			return
+		if err != nil {
+			fmt.Printf("error building model: %v", err)
 		}
 
-		if err := m.New(Config); err != nil {
+		if err := m.New(); err != nil {
 			fmt.Printf("error initializing model: %v", err)
 			return
 		}

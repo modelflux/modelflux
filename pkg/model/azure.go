@@ -4,35 +4,58 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/modelflux/cli/pkg/util"
 	"github.com/openai/openai-go"
 	"github.com/openai/openai-go/azure"
 	"github.com/spf13/viper"
 )
 
-type AzureOpenAIModel struct {
-	APIKey     string
-	Endpoint   string
-	Deployment string
-	Version    string
+type azureOpenAIModelOptions struct {
+	APIKey     string `yaml:"api_key"`
+	Endpoint   string `yaml:"endpoint"`
+	Deployment string `yaml:"deployment"`
+	Version    string `yaml:"version"`
 }
 
-func (m *AzureOpenAIModel) New(cfg *viper.Viper) error {
-	mcfg := cfg.GetStringMapString("model")
-	m.APIKey = mcfg["key"]
-	m.Endpoint = mcfg["endpoint"]
-	m.Deployment = mcfg["deployment"]
-	m.Version = mcfg["version"]
+type AzureOpenAIModel struct {
+	options azureOpenAIModelOptions
+}
 
-	if m.APIKey == "" || m.Endpoint == "" || m.Deployment == "" || m.Version == "" {
-		return fmt.Errorf("missing required fields")
+func (m *AzureOpenAIModel) ValidateAndSetOptions(uOptions map[string]interface{}, cfg *viper.Viper) error {
+	// Create a struct from the map using the util package.
+	options, err := util.CreateStruct[azureOpenAIModelOptions](uOptions)
+
+	if err != nil {
+		return err
 	}
+
+	if options.APIKey == "" || options.Endpoint == "" || options.Deployment == "" || options.Version == "" {
+		mcfg := cfg.GetStringMapString("model")
+		m.options.APIKey = mcfg["key"]
+		m.options.Endpoint = mcfg["endpoint"]
+		m.options.Deployment = mcfg["deployment"]
+		m.options.Version = mcfg["version"]
+	}
+
+	if m.options.APIKey == "" || m.options.Endpoint == "" || m.options.Deployment == "" || m.options.Version == "" {
+		return fmt.Errorf("missing required api_key, endpoint, deployment, or version for azure model")
+	}
+
+	return nil
+}
+
+func (m *AzureOpenAIModel) ValidateAndSetParameters(uParams map[string]interface{}) error {
+	return nil
+}
+
+func (m *AzureOpenAIModel) New() error {
 	return nil
 }
 
 func (m *AzureOpenAIModel) Generate(input string) (string, error) {
 	client := openai.NewClient(
-		azure.WithEndpoint(m.Endpoint, m.Version),
-		azure.WithAPIKey(m.APIKey),
+		azure.WithEndpoint(m.options.Endpoint, m.options.Version),
+		azure.WithAPIKey(m.options.APIKey),
 	)
 
 	resp, err := client.Chat.Completions.New(context.TODO(), openai.ChatCompletionNewParams{

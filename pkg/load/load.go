@@ -4,24 +4,16 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/modelflux/cli/pkg/model"
+	"github.com/modelflux/cli/pkg/tool"
 	"gopkg.in/yaml.v3"
 )
 
 type WorkflowSchema struct {
-	Name   string                        `yaml:"name"`
-	Models map[string]ModelConfiguration `yaml:"models"`
-	Tools  map[string]Tool               `yaml:"tools"`
-	Task   Task                          `yaml:"task"`
-}
-
-type ModelConfiguration struct {
-	Type  string `yaml:"type"`
-	Model string `yaml:"model"`
-}
-
-type Tool struct {
-	Source      string            `yaml:"source"`
-	ToolOptions map[string]string `yaml:"toolOptions"`
+	Name   string                              `yaml:"name"`
+	Models map[string]model.ModelConfiguration `yaml:"models"`
+	Tools  map[string]tool.ToolConfiguration   `yaml:"tools"`
+	Task   Task                                `yaml:"task"`
 }
 
 type Task struct {
@@ -30,12 +22,12 @@ type Task struct {
 }
 
 type Step struct {
-	Name       string            `yaml:"name"`
-	ID         string            `yaml:"id,omitempty"`
-	Model      string            `yaml:"model,omitempty"`
-	Tool       string            `yaml:"tool,omitempty"`
-	Parameters map[string]string `yaml:"parameters,omitempty"`
-	Output     string            `yaml:"output,omitempty"`
+	Name       string                 `yaml:"name"`
+	ID         string                 `yaml:"id,omitempty"`
+	Model      string                 `yaml:"model,omitempty"`
+	Tool       string                 `yaml:"tool,omitempty"`
+	Parameters map[string]interface{} `yaml:"parameters,omitempty"`
+	Output     string                 `yaml:"output,omitempty"`
 }
 
 func loadYAML(filePath string) (*WorkflowSchema, error) {
