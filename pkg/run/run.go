@@ -6,7 +6,7 @@ import (
 )
 
 func Run(workflowName string, cfg *viper.Viper) {
-	schema, err := workflow.Load(workflowName)
+	schema, err := workflow.LoadSchema(workflowName)
 	if err != nil {
 		panic(err)
 	}

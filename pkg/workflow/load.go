@@ -29,8 +29,10 @@ type Step struct {
 	Output     string                 `yaml:"output,omitempty"`
 }
 
-func loadYAML(filePath string) (*WorkflowSchema, error) {
-	data, err := os.ReadFile(filePath)
+func LoadSchema(workflowName string) (*WorkflowSchema, error) {
+	workflowPath := fmt.Sprintf("workflows/%s.yaml", workflowName)
+	fmt.Println("Loading workflow:", workflowName)
+	data, err := os.ReadFile(workflowPath)
 	if err != nil {
 		return nil, err
 	}
@@ -42,11 +44,4 @@ func loadYAML(filePath string) (*WorkflowSchema, error) {
 	}
 
 	return &workflow, nil
-}
-
-func Load(workflowName string) (*WorkflowSchema, error) {
-	workflowPath := fmt.Sprintf("workflows/%s.yaml", workflowName)
-	fmt.Println("Loading workflow:", workflowName)
-	return loadYAML(workflowPath)
-
 }
