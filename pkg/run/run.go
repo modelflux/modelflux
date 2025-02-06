@@ -3,51 +3,104 @@ package run
 import (
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/modelflux/cli/pkg/load"
 	"github.com/modelflux/cli/pkg/model"
+	"github.com/modelflux/cli/pkg/tool"
 )
 
 func Run(workflowName string) {
+
+	// The following code is for demonstration purposes only and will be refactored frequently.
+
 	fmt.Println("run called")
 	workflow := load.Load(workflowName)
 	if workflow == nil {
 		log.Fatal("Workflow loading failed.")
 	}
 
-	// TODO: Validate the workflow schema
-
 	for _, step := range workflow.Task.Steps {
+		// Print a new line between steps. This is done to make the output more readable.
+		fmt.Println(" ")
 		fmt.Println("Running step:", step.Name)
 
-		var m model.Model
+		toolCfg := workflow.Tools[step.Tool]
+		modelCfg := workflow.Models[step.Model]
 
-		if step.Model != "" {
-			// Load the model if the model type is ollama
-			modelType := workflow.Models[step.Model].Type
-
-			if modelType == "ollama" {
-				m = &model.OllamaModel{Model: workflow.Models[step.Model].Model}
-				err := m.New(nil)
-				if err != nil {
-					fmt.Printf("failed to load model: %s", err)
-					return
-				}
-				// Add space to output to make it easier to read
-				fmt.Println(" ")
-			}
+		if toolCfg.Identifier == "" && modelCfg.Identifier == "" {
+			log.Fatal("Step must have either a tool or a model.")
+		} else if toolCfg.Identifier != "" && modelCfg.Identifier != "" {
+			log.Fatal("Step cannot have both a tool and a model.")
 		}
 
-		prompt := step.Parameters["prompt"]
-		// Execute the prompt
-		if step.Parameters["prompt"] != "" {
-			fmt.Println("Prompt:", step.Parameters["prompt"])
-			response, err := m.Generate(prompt)
-			if err != nil {
-				log.Fatal(err)
+		if toolCfg.Identifier != "" {
+			switch toolCfg.Identifier {
+			case "text-file-reader":
+				fmt.Println("Running text-file-reader")
+				tool := &tool.TextFileReaderTool{}
+				params, err := tool.ValidateParams(step.Parameters)
+				if err != nil {
+					log.Fatal(err)
+				}
+				content, err := tool.Run(params)
+				if err != nil {
+					log.Fatal(err)
+				}
+
+				fmt.Println("Content of the file:")
+				fmt.Println("---")
+				// Print first 5 lines of the file.
+				contentLines := strings.Split(content, "\n")
+				for i := 0; i < 5 && i < len(contentLines); i++ {
+					fmt.Println(contentLines[i])
+				}
+				fmt.Println("---")
+
+			case "text-file-writer":
+				fmt.Println("Running text-file-writer")
+				tool := &tool.TextFileWriterTool{}
+				params, err := tool.ValidateParams(step.Parameters)
+				if err != nil {
+					log.Fatal(err)
+				}
+				writtenPath, err := tool.Run(params)
+				if err != nil {
+					log.Fatal(err)
+				}
+				fmt.Println("File written to:", writtenPath)
+				println("")
+			default:
+				log.Fatalf("Unknown tool: %s", toolCfg.Identifier)
 			}
-			fmt.Println("Response:", response)
-			fmt.Println(" ")
+		} else {
+			switch modelCfg.Identifier {
+			case "ollama":
+				{
+					fmt.Println("Running ollama")
+
+					modelName, ok := modelCfg.ModelOptions["model"].(string)
+					if !ok {
+						log.Fatal("Model name not provided")
+					}
+
+					m := &model.OllamaModel{Model: modelName}
+					err := m.New(nil)
+					if err != nil {
+						log.Fatal(err)
+					}
+
+					prompt := step.Parameters["prompt"].(string)
+					output, err := m.Generate(prompt)
+					if err != nil {
+						log.Fatal(err)
+					}
+					fmt.Println("Generated text:")
+					fmt.Println("---")
+					fmt.Println(output)
+					fmt.Println("---")
+				}
+			}
 		}
 	}
 }

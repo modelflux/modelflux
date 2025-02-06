@@ -10,18 +10,18 @@ import (
 type WorkflowSchema struct {
 	Name   string                        `yaml:"name"`
 	Models map[string]ModelConfiguration `yaml:"models"`
-	Tools  map[string]Tool               `yaml:"tools"`
+	Tools  map[string]ToolConfiguration  `yaml:"tools"`
 	Task   Task                          `yaml:"task"`
 }
 
 type ModelConfiguration struct {
-	Type  string `yaml:"type"`
-	Model string `yaml:"model"`
+	Identifier   string                 `yaml:"identifier"`
+	ModelOptions map[string]interface{} `yaml:"options,omitempty"`
 }
 
-type Tool struct {
-	Source      string            `yaml:"source"`
-	ToolOptions map[string]string `yaml:"toolOptions"`
+type ToolConfiguration struct {
+	Identifier  string                 `yaml:"identifier"`
+	ToolOptions map[string]interface{} `yaml:"options,omitempty"`
 }
 
 type Task struct {
@@ -30,12 +30,12 @@ type Task struct {
 }
 
 type Step struct {
-	Name       string            `yaml:"name"`
-	ID         string            `yaml:"id,omitempty"`
-	Model      string            `yaml:"model,omitempty"`
-	Tool       string            `yaml:"tool,omitempty"`
-	Parameters map[string]string `yaml:"parameters,omitempty"`
-	Output     string            `yaml:"output,omitempty"`
+	Name       string                 `yaml:"name"`
+	ID         string                 `yaml:"id,omitempty"`
+	Model      string                 `yaml:"model,omitempty"`
+	Tool       string                 `yaml:"tool,omitempty"`
+	Parameters map[string]interface{} `yaml:"parameters,omitempty"`
+	Output     string                 `yaml:"output,omitempty"`
 }
 
 func loadYAML(filePath string) (*WorkflowSchema, error) {
