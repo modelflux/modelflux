@@ -46,9 +46,9 @@ The workflow may take longer to start running as it has to go through the valida
 ### Tasks
 
 - [x] Parse the workflow file (YAML)
-- [ ] Validate the Workflow Schema
-- [ ] Initialize Tools and Models
-- [ ] Create a pipeline to run the workflow
+- [x] Validate the Workflow Schema
+- [x] Initialize Tools and Models
+- [ ] Run the Workflow Steps
 
 ### Considerations
 
