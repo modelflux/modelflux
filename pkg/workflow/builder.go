@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/modelflux/cli/pkg/load"
 	"github.com/modelflux/cli/pkg/model"
 	"github.com/modelflux/cli/pkg/tool"
 	"github.com/modelflux/cli/pkg/util"
@@ -42,35 +41,8 @@ func (n *WorkflowNode) Run() (string, error) {
 	return n.next, nil
 }
 
-// WorkflowBuilder provides a chainable API to build a Workflow.
-type WorkflowBuilder struct {
-	data *load.WorkflowSchema
-	cfg  *viper.Viper
-	err  error
-}
-
-func InitBuilder(cfg *viper.Viper) *WorkflowBuilder {
-	return &WorkflowBuilder{cfg: cfg}
-}
-
-// Parse parses the YAML into the workflow structure.
-func (b *WorkflowBuilder) Load(workflowName string) *WorkflowBuilder {
-	if b.err != nil {
-		return b
-	}
-	b.data = load.Load(workflowName)
-	return b
-}
-
-func (b *WorkflowBuilder) ValidateAndBuild() (*Workflow, error) {
+func ValidateAndBuild(data *WorkflowSchema, cfg *viper.Viper) (*Workflow, error) {
 	fmt.Println()
-	if b.err != nil {
-		return nil, b.err
-	}
-
-	if b.data == nil {
-		return nil, fmt.Errorf("workflow data is empty")
-	}
 
 	// Initialize the workflow
 	wf := &Workflow{}
@@ -78,42 +50,39 @@ func (b *WorkflowBuilder) ValidateAndBuild() (*Workflow, error) {
 	wf.models = make(map[string]*model.Model)
 	wf.tools = make(map[string]*tool.Tool)
 
-	if b.data.Task.Name != "" {
-		wf.task = b.data.Task.Name
+	if data.Task.Name != "" {
+		wf.task = data.Task.Name
 	}
 
-	for k, m := range b.data.Models {
+	for k, m := range data.Models {
 		fmt.Println("Validating model", k)
 		// Build the model
-		built_m, err := model.ValidateAndBuild(m, b.cfg)
+		built_m, err := model.ValidateAndBuild(m, cfg)
 		if err != nil {
-			b.err = err
 			return nil, err
 		}
 
 		wf.models[k] = &built_m
 	}
 
-	for k, t := range b.data.Tools {
+	for k, t := range data.Tools {
 		fmt.Println("Validating tool", k)
 		// Build the tool
 		built_tool, err := tool.ValidateAndBuild(t)
 		if err != nil {
-			b.err = err
 			return nil, err
 		}
 		wf.tools[k] = &built_tool
 	}
-	if len(b.data.Task.Steps) == 0 {
-		b.err = fmt.Errorf("no steps in workflow")
-		return nil, b.err
+	if len(data.Task.Steps) == 0 {
+		return nil, fmt.Errorf("no steps in the workflow")
 	}
 
 	// Create a root node for the workflow
-	wf.rootNode = b.data.Task.Steps[0].ID
+	wf.rootNode = data.Task.Steps[0].ID
 
 	var prev string
-	for _, step := range b.data.Task.Steps {
+	for _, step := range data.Task.Steps {
 		// Create the nodes
 		node := &WorkflowNode{}
 		node.id = step.ID
@@ -121,14 +90,12 @@ func (b *WorkflowBuilder) ValidateAndBuild() (*Workflow, error) {
 		node.model = wf.models[step.Model]
 		node.stepName = step.Name
 		if node.tool == nil && node.model == nil {
-			b.err = fmt.Errorf("step %s has no tool or model", step.Name)
-			return nil, b.err
+			return nil, fmt.Errorf("step %s has no tool or model", step.Name)
 		}
 		if node.tool != nil {
 			t := *node.tool
 			p, err := t.ValidateParameters(step.Parameters)
 			if err != nil {
-				b.err = err
 				return nil, err
 			}
 			node.parameters = p

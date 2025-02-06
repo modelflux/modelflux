@@ -1,4 +1,4 @@
-package load
+package workflow
 
 import (
 	"fmt"
@@ -44,13 +44,9 @@ func loadYAML(filePath string) (*WorkflowSchema, error) {
 	return &workflow, nil
 }
 
-func Load(workflowName string) *WorkflowSchema {
+func Load(workflowName string) (*WorkflowSchema, error) {
 	workflowPath := fmt.Sprintf("workflows/%s.yaml", workflowName)
 	fmt.Println("Loading workflow:", workflowName)
-	workflow, err := loadYAML(workflowPath)
-	if err != nil {
-		fmt.Println("Error loading YAML:", err)
-		return nil
-	}
-	return workflow
+	return loadYAML(workflowPath)
+
 }
