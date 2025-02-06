@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
+	"time"
+
+	"golang.org/x/exp/rand"
 )
 
 // CreateStruct creates an instance of a struct of type T and populates its fields
@@ -74,4 +77,24 @@ func CreateStruct[T any](fields map[string]interface{}) (T, error) {
 	}
 
 	return s, nil
+}
+
+// GenerateRandomID generates a random string of the specified size.
+// The string consists of lowercase and uppercase letters and digits.
+//
+// Parameters:
+//   - size: The length of the random string to generate.
+//
+// Returns:
+//
+//	A random string of the specified length.
+func GenerateRandomID(size int) string {
+	letters := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	b := make([]byte, int(size))
+	rand.Seed(uint64(time.Now().UnixNano()))
+
+	for i := range b {
+		b[i] = letters[rand.Intn(len(letters))]
+	}
+	return string(b)
 }

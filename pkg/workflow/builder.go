@@ -7,6 +7,7 @@ import (
 	"github.com/modelflux/cli/pkg/load"
 	"github.com/modelflux/cli/pkg/model"
 	"github.com/modelflux/cli/pkg/tool"
+	"github.com/modelflux/cli/pkg/util"
 	"github.com/spf13/viper"
 )
 
@@ -111,6 +112,7 @@ func (b *WorkflowBuilder) ValidateAndBuild() (*Workflow, error) {
 	// Create a root node for the workflow
 	wf.rootNode = b.data.Task.Steps[0].ID
 
+	var prev string
 	for _, step := range b.data.Task.Steps {
 		// Create the nodes
 		node := &WorkflowNode{}
@@ -133,7 +135,8 @@ func (b *WorkflowBuilder) ValidateAndBuild() (*Workflow, error) {
 			// Check if any of the parameters have a placeholder
 			// and record it to be replaced at runtime
 			for _, value := range step.Parameters {
-				var placeholderRegex = regexp.MustCompile(`\{\{(.*)\.output\}\}`)
+				println("Checking for placeholders in", value)
+				var placeholderRegex = regexp.MustCompile(`\{\{([\w-]+)\.output\}\}`)
 				if strValue, ok := value.(string); ok && placeholderRegex.MatchString(strValue) {
 					// Extract the id of the step that will provide the output
 					// for this placeholder this is the portion before the dot
@@ -144,7 +147,22 @@ func (b *WorkflowBuilder) ValidateAndBuild() (*Workflow, error) {
 				}
 			}
 		}
-		node.Output = step.Output
+		var id string = ""
+		if step.ID != "" {
+			id = step.ID
+			if wf.graph[id] != nil {
+				return nil, fmt.Errorf("duplicate step ID %s", id)
+			}
+		} else {
+			// Generate a unique ID for the step
+			for id == "" || wf.graph[id] == nil {
+				id = util.GenerateRandomID(5)
+			}
+		}
+		if prev != "" {
+			wf.graph[prev].next = id
+		}
+		prev = id
 		wf.graph[step.ID] = node
 	}
 

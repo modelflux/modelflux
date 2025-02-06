@@ -15,7 +15,7 @@ task:
       id: "step-1"
       parameters:
         prompt: "What is 1+1 equal?"
-    - name: " Output"
+    - name: "Check Output"
       model: "llama-small"
       id: "step-2"
       parameters:
