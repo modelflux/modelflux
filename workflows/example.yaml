@@ -8,7 +8,7 @@ models:
     options:
       model: "llama3.2:1b"
 task:
-  name: "Generate Output"
+  name: "Summarize Read Me"
   steps:
     - name: "Generate Output"
       model: "llama-small"
