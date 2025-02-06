@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/orelbn/tbd/pkg/util"
+	"github.com/modelflux/cli/pkg/util"
 )
 
 type TextFileReaderParams struct {

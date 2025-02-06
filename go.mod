@@ -1,4 +1,4 @@
-module github.com/orelbn/tbd
+module github.com/modelflux/cli
 
 go 1.23.5
 
