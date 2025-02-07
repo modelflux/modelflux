@@ -48,7 +48,7 @@ The workflow may take longer to start running as it has to go through the valida
 - [x] Parse the workflow file (YAML)
 - [x] Validate the Workflow Schema
 - [x] Initialize Tools and Models
-- [ ] Run the Workflow Steps
+- [x] Run the Workflow Steps
 
 ### Considerations
 
