@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 
 	"github.com/modelflux/cli/pkg/util"
+	"github.com/spf13/viper"
 )
 
 type textFileReaderParameters struct {
@@ -20,23 +21,26 @@ type TextFileReaderTool struct {
 	options textFileReaderOptions
 }
 
-func (t *TextFileReaderTool) ValidateAndSetOptions(uOptions map[string]interface{}) error {
+func (t *TextFileReaderTool) ValidateAndSetOptions(uOptions map[string]interface{}, cfg *viper.Viper) error {
 	t.options = textFileReaderOptions{}
 	return nil
 }
 
-func (t *TextFileReaderTool) ValidateParameters(uParams map[string]interface{}) (interface{}, error) {
-	params, err := util.CreateStruct[textFileReaderParameters](uParams)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return params, nil
+func (t *TextFileReaderTool) New() error {
+	return nil
 }
 
-func (t *TextFileReaderTool) SetParameters(params interface{}) error {
-	p := params.(textFileReaderParameters)
+func (t *TextFileReaderTool) ValidateParameters(uParams map[string]interface{}) error {
+	err := util.ValidateStructFields[textFileReaderParameters](uParams)
+	return err
+}
+
+func (t *TextFileReaderTool) SetParameters(params map[string]interface{}) error {
+	p, err := util.CreateStruct[textFileReaderParameters](params)
+
+	if err != nil {
+		return err
+	}
 
 	// Additional checks.
 	if p.Filepath == "" {

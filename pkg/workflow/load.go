@@ -4,15 +4,14 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/modelflux/cli/pkg/model"
 	"github.com/modelflux/cli/pkg/tool"
 	"gopkg.in/yaml.v3"
 )
 
 type WorkflowSchema struct {
-	Models map[string]model.ModelConfiguration `yaml:"models"`
-	Tools  map[string]tool.ToolConfiguration   `yaml:"tools"`
-	Task   Task                                `yaml:"task"`
+	Models map[string]tool.ToolConfiguration `yaml:"models"`
+	Tools  map[string]tool.ToolConfiguration `yaml:"tools"`
+	Task   Task                              `yaml:"task"`
 }
 
 type Task struct {

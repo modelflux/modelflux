@@ -3,49 +3,29 @@ package model
 import (
 	"fmt"
 
-	"github.com/spf13/viper"
+	"github.com/modelflux/cli/pkg/tool"
 )
 
-type ModelConfiguration struct {
-	Identifier   string                 `yaml:"identifier"`
-	ModelOptions map[string]interface{} `yaml:"options,omitempty"`
-}
+// Model is the interface all models must implement.
+//
+// Models are considered a special type of tool that can have additional standard methods.
+// Methods:
+// - New: Initialize the model. This is for models that require initialization. Other it will just return nil.
 
-// Model represents an interface for a model with methods to generate output,
-// initialize the model, and validate and set options and parameters.
-//
-// Generate takes an input string and returns a generated string and an error if any occurs.
-//
-// New initializes the model and returns an error if any occurs.
-//
-// ValidateAndSetOptions validates and sets the provided user options using the given viper configuration,
-// and returns an error if any occurs.
-//
-// ValidateAndSetParameters validates and sets the provided user parameters,
-// and returns an error if any occurs.
 type Model interface {
+	tool.Tool
 	Generate(input string) (string, error)
-	New() error
-	ValidateAndSetOptions(uOptions map[string]interface{}, cfg *viper.Viper) error
-	ValidateAndSetParameters(uParams map[string]interface{}) error
 }
 
-func ValidateAndBuild(mdata ModelConfiguration, cfg *viper.Viper) (Model, error) {
-	var m Model
-	switch mdata.Identifier {
-	case "openai":
-		m = &OpenAIModel{}
-	case "azure":
-		m = &AzureOpenAIModel{}
+func GetModel(name string) (Model, error) {
+	switch name {
 	case "ollama":
-		m = &OllamaModel{}
+		return &OllamaModel{}, nil
+	case "azure-openai":
+		return &AzureOpenAIModel{}, nil
+	case "openai":
+		return &OpenAIModel{}, nil
 	default:
-		return nil, fmt.Errorf("model %s not found", mdata.Identifier)
+		return nil, fmt.Errorf("model %s not found", name)
 	}
-
-	if err := m.ValidateAndSetOptions(mdata.ModelOptions, cfg); err != nil {
-		return nil, fmt.Errorf("error validating model options: %v", err)
-	}
-
-	return m, nil
 }

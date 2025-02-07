@@ -15,6 +15,7 @@ type openAIModelOptions struct {
 }
 
 type openAImodelParameters struct {
+	Input string `yaml:"input"`
 }
 
 type OpenAIModel struct {
@@ -43,14 +44,34 @@ func (m *OpenAIModel) ValidateAndSetOptions(uOptions map[string]interface{}, cfg
 	return nil
 
 }
+func (m *OpenAIModel) ValidateParameters(uParams map[string]interface{}) error {
+	err := util.ValidateStructFields[openAImodelParameters](uParams)
+	return err
+}
 
-func (m *OpenAIModel) ValidateAndSetParameters(uParams map[string]interface{}) error {
-	m.parameters = openAImodelParameters{}
+func (m *OpenAIModel) SetParameters(params map[string]interface{}) error {
+	p, err := util.CreateStruct[openAImodelParameters](params)
+
+	if err != nil {
+		return err
+	}
+
+	// Additional checks.
+	if p.Input == "" {
+		return fmt.Errorf("missing required parameter: input in azure-openai model parameters")
+	}
+
+	m.parameters = p
+
 	return nil
 }
 
 func (m *OpenAIModel) New() error {
 	return nil
+}
+
+func (m *OpenAIModel) Run() (string, error) {
+	return m.Generate(m.parameters.Input)
 }
 
 func (m *OpenAIModel) Generate(input string) (string, error) {

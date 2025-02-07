@@ -14,11 +14,15 @@ var chatCmd = &cobra.Command{
 	Short: "Send a message to the model. This is just a test command.",
 	Run: func(cmd *cobra.Command, args []string) {
 		var input = args[0]
-		mcfg := model.ModelConfiguration{Identifier: Model}
-		m, err := model.ValidateAndBuild(mcfg, Config)
-
+		m, err := model.GetModel(Model)
 		if err != nil {
-			fmt.Printf("error building model: %v", err)
+			fmt.Printf("error getting model: %v", err)
+			return
+		}
+		err = m.ValidateAndSetOptions(nil, Config)
+		if err != nil {
+			fmt.Printf("error validating options: %v", err)
+			return
 		}
 
 		if err := m.New(); err != nil {
@@ -39,5 +43,5 @@ var chatCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(chatCmd)
 
-	chatCmd.Flags().StringVarP(&Model, "model", "m", "azure", "Model to use (required)")
+	chatCmd.Flags().StringVarP(&Model, "model", "m", "azure-openai", "Model to use (required)")
 }

@@ -7,16 +7,25 @@ models:
     identifier: "ollama"
     options:
       model: "llama3.2:1b"
+tools:
+  write-to-file:
+    identifier: "text-file-writer"
 task:
-  name: "Summarize Read Me"
+  name: "Generate and Checkout Output"
   steps:
     - name: "Generate Output"
       model: "llama-small"
       id: "step-1"
       parameters:
-        prompt: "What is 1+1 equal?"
+        input: "What is 1+1 equal?"
     - name: "Check Output"
       model: "llama-small"
       id: "step-2"
       parameters:
-        prompt: "Is this step correct? {{step-1.output}}"
+        input: "Is this step correct? ${{step-1.output}}"
+    - name: "Write to File"
+      tool: "write-to-file"
+      id: "step-3"
+      parameters:
+        filepath: ".out/output.txt"
+        content: "${{step-2.output}}"

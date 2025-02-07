@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 
 	"github.com/modelflux/cli/pkg/util"
+	"github.com/spf13/viper"
 )
 
 type textFileWriterParameters struct {
@@ -22,23 +23,26 @@ type TextFileWriterTool struct {
 	options textFileWriterOptions
 }
 
-func (t *TextFileWriterTool) ValidateAndSetOptions(uOptions map[string]interface{}) error {
+func (t *TextFileWriterTool) ValidateAndSetOptions(uOptions map[string]interface{}, cfg *viper.Viper) error {
 	t.options = textFileWriterOptions{}
 	return nil
 }
 
-func (t *TextFileWriterTool) ValidateParameters(uParams map[string]interface{}) (interface{}, error) {
-	params, err := util.CreateStruct[textFileWriterParameters](uParams)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return params, nil
+func (t *TextFileWriterTool) New() error {
+	return nil
 }
 
-func (t *TextFileWriterTool) SetParameters(params interface{}) error {
-	p := params.(textFileWriterParameters)
+func (t *TextFileWriterTool) ValidateParameters(uParams map[string]interface{}) error {
+	err := util.ValidateStructFields[textFileWriterParameters](uParams)
+	return err
+}
+
+func (t *TextFileWriterTool) SetParameters(params map[string]interface{}) error {
+	p, err := util.CreateStruct[textFileWriterParameters](params)
+
+	if err != nil {
+		return err
+	}
 
 	// Additional checks.
 	if p.Filepath == "" {

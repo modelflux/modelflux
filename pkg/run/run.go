@@ -10,11 +10,18 @@ func Run(workflowName string, cfg *viper.Viper) {
 	if err != nil {
 		panic(err)
 	}
-	w, err := workflow.ValidateAndBuild(schema, cfg)
+	w, err := workflow.ValidateAndBuildWorkflow(schema, cfg)
 	if err != nil {
 		panic(err)
 	}
 
-	w.Init()
-	w.Run()
+	err = w.Init()
+	if err != nil {
+		panic(err)
+	}
+
+	err = w.Run()
+	if err != nil {
+		panic(err)
+	}
 }
