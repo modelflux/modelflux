@@ -23,7 +23,7 @@ func ValidateAndBuildWorkflow(data *WorkflowSchema, cfg *viper.Viper) (*Workflow
 		wf.Task = data.Task.Name
 	}
 
-	// Validate the models
+	// Validate the models configuration
 	for k, mcfg := range data.Models {
 		fmt.Println("Validating model", k)
 
@@ -40,7 +40,7 @@ func ValidateAndBuildWorkflow(data *WorkflowSchema, cfg *viper.Viper) (*Workflow
 		wf.Models[k] = &m
 	}
 
-	// Validate and build the tools
+	// Validate the tools configuration
 	for k, tcfg := range data.Tools {
 		fmt.Println("Validating tool", k)
 
@@ -49,7 +49,6 @@ func ValidateAndBuildWorkflow(data *WorkflowSchema, cfg *viper.Viper) (*Workflow
 			return nil, err
 		}
 
-		// Validate the model options
 		err = t.ValidateAndSetOptions(tcfg.Options, cfg)
 
 		if err != nil {
