@@ -3,33 +3,25 @@ package tool
 import (
 	"fmt"
 
-	"github.com/spf13/viper"
+	"github.com/modelflux/cli/pkg/fileio"
 )
 
 type ToolConfiguration struct {
-	Identifier string                 `yaml:"identifier"`
-	Options    map[string]interface{} `yaml:"options,omitempty"`
+	Source  string         `yaml:"source"`
+	Options map[string]any `yaml:"options,omitempty"`
 }
 
 // Tool is the interface all tools must implement.
-type Tool interface {
-	// Options can be set at build time and are currently static.
-	ValidateAndSetOptions(uOptions map[string]interface{}, cfg *viper.Viper) error
-	New() error
-	// Parameters can change between usage, they can be validated with a placeholder for dynamic data at build time
-	// and set at runtime.
-	ValidateParameters(uParams map[string]interface{}) error
-	SetParameters(uParams map[string]interface{}) error
-	Run() (string, error)
+type Tool interface { //params are a stringified yaml
+	Validate(uParams map[string]interface{}) error
+	Run(params map[string]interface{}) (string, error)
 }
 
-func GetTool(t string) (Tool, error) {
-	switch t {
-	case "text-file-reader":
-		return &TextFileReaderTool{}, nil
-	case "text-file-writer":
-		return &TextFileWriterTool{}, nil
+func GetTool(name string) (Tool, error) {
+	switch name {
+	case "modelflux/fileio":
+		return &fileio.FileIO{}, nil
 	default:
-		return nil, fmt.Errorf("unknown tool: %s", t)
+		return nil, fmt.Errorf("tool %s not found", name)
 	}
 }

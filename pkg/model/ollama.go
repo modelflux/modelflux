@@ -14,18 +14,13 @@ type ollamaModelOptions struct {
 	Model string `yaml:"model"`
 }
 
-type ollamaModelParameters struct {
-	Input string `yaml:"input"`
-}
-
 type OllamaModel struct {
-	options    ollamaModelOptions
-	parameters ollamaModelParameters
+	options ollamaModelOptions
 }
 
 func (o *OllamaModel) ValidateAndSetOptions(uOptions map[string]interface{}, cfg *viper.Viper) error {
 	// Create a struct from the map using the util package.
-	options, err := util.CreateStruct[ollamaModelOptions](uOptions)
+	options, err := util.BuildStruct[ollamaModelOptions](uOptions)
 
 	if err != nil {
 		return err
@@ -40,29 +35,8 @@ func (o *OllamaModel) ValidateAndSetOptions(uOptions map[string]interface{}, cfg
 	return nil
 }
 
-func (o *OllamaModel) ValidateParameters(uParams map[string]interface{}) error {
-	err := util.ValidateStructFields[ollamaModelParameters](uParams)
-	return err
-}
-
-func (o *OllamaModel) SetParameters(params map[string]interface{}) error {
-	p, err := util.CreateStruct[ollamaModelParameters](params)
-
-	if err != nil {
-		return err
-	}
-
-	// Additional checks.
-	if p.Input == "" {
-		return fmt.Errorf("missing required parameter: input in ollama model parameters")
-	}
-
-	o.parameters = p
-
-	return nil
-}
-
-func (o *OllamaModel) New() error {
+func (o *OllamaModel) Init() error {
+	fmt.Println("Here")
 	client, err := api.ClientFromEnvironment()
 
 	if err != nil {
@@ -116,10 +90,6 @@ func (o *OllamaModel) New() error {
 		return err
 	}
 	return nil
-}
-
-func (o *OllamaModel) Run() (string, error) {
-	return o.Generate(o.parameters.Input)
 }
 
 func (o *OllamaModel) Generate(input string) (string, error) {

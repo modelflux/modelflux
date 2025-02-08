@@ -25,7 +25,7 @@ var chatCmd = &cobra.Command{
 			return
 		}
 
-		if err := m.New(); err != nil {
+		if err := m.Init(); err != nil {
 			fmt.Printf("error initializing model: %v", err)
 			return
 		}

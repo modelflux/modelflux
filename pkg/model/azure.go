@@ -17,18 +17,13 @@ type azureOpenAIModelOptions struct {
 	Version    string `yaml:"version"`
 }
 
-type azureOpenAIModelParameters struct {
-	Input string `yaml:"input"`
-}
-
 type AzureOpenAIModel struct {
-	options    azureOpenAIModelOptions
-	parameters azureOpenAIModelParameters
+	options azureOpenAIModelOptions
 }
 
 func (m *AzureOpenAIModel) ValidateAndSetOptions(uOptions map[string]interface{}, cfg *viper.Viper) error {
 	// Create a struct from the map using the util package.
-	options, err := util.CreateStruct[azureOpenAIModelOptions](uOptions)
+	options, err := util.BuildStruct[azureOpenAIModelOptions](uOptions)
 
 	if err != nil {
 		return err
@@ -51,34 +46,8 @@ func (m *AzureOpenAIModel) ValidateAndSetOptions(uOptions map[string]interface{}
 	return nil
 }
 
-func (m *AzureOpenAIModel) ValidateParameters(uParams map[string]interface{}) error {
-	err := util.ValidateStructFields[azureOpenAIModelParameters](uParams)
-	return err
-}
-
-func (m *AzureOpenAIModel) SetParameters(params map[string]interface{}) error {
-	p, err := util.CreateStruct[azureOpenAIModelParameters](params)
-
-	if err != nil {
-		return err
-	}
-
-	// Additional checks.
-	if p.Input == "" {
-		return fmt.Errorf("missing required parameter: input in azure-openai model parameters")
-	}
-
-	m.parameters = p
-
+func (m *AzureOpenAIModel) Init() error {
 	return nil
-}
-
-func (m *AzureOpenAIModel) New() error {
-	return nil
-}
-
-func (m *AzureOpenAIModel) Run() (string, error) {
-	return m.Generate(m.parameters.Input)
 }
 
 func (m *AzureOpenAIModel) Generate(input string) (string, error) {

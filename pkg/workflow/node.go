@@ -4,23 +4,27 @@ import (
 	"fmt"
 	"regexp"
 
+	generate "github.com/modelflux/cli/pkg/ai"
 	"github.com/modelflux/cli/pkg/model"
 	"github.com/modelflux/cli/pkg/tool"
 )
 
+// A WorkflowNode represents a step in the workflow.
 type WorkflowNode struct {
-	StepName   string
-	ID         string
-	Parameters map[string]interface{}
-	Tool       *tool.Tool
-	Model      *model.Model
-	Output     string // The result of running this node
-	Next       string
+	StepName  string
+	ID        string
+	Params    map[string]interface{}
+	Operation string
+	Tool      tool.Tool
+	Model     model.Model
+	Next      string // The ID of the next node to run
+	Output    string
+	Log       bool
 }
 
-func (n *WorkflowNode) ReplacePlaceholders(outputs map[string]string) {
+func (n *WorkflowNode) replacePlaceholders(outputs map[string]string) {
 	// Replace placeholders in the parameters
-	for k, v := range n.Parameters {
+	for k, v := range n.Params {
 		if s, ok := v.(string); ok {
 			// Identify a placeholder in the string. ${{stepid.output}}
 			regexp := regexp.MustCompile(`\${{([a-zA-Z0-9-]+)\.output}}`)
@@ -30,7 +34,7 @@ func (n *WorkflowNode) ReplacePlaceholders(outputs map[string]string) {
 				if len(match) == 2 {
 					if output, ok := outputs[match[1]]; ok {
 						s = regexp.ReplaceAllString(s, output)
-						n.Parameters[k] = s
+						n.Params[k] = s
 					}
 				}
 			}
@@ -42,16 +46,16 @@ func (n *WorkflowNode) Run(outputs map[string]string) (string, error) {
 	fmt.Println("Running step:", n.StepName)
 
 	// Replace placeholders in the parameters
-	n.ReplacePlaceholders(outputs)
+	n.replacePlaceholders(outputs)
 
 	var output string
 	var err error
-	if n.Model != nil {
-		(*n.Model).SetParameters(n.Parameters)
-		output, err = (*n.Model).Run()
-	} else if n.Tool != nil {
-		(*n.Tool).SetParameters(n.Parameters)
-		output, err = (*n.Tool).Run()
+	if n.Tool != nil {
+		output, err = n.Tool.Run(n.Params)
+	} else if n.Model != nil {
+		if n.Operation == "generate" {
+			output, err = generate.Run(n.Params, n.Model)
+		}
 	}
 
 	if err != nil {

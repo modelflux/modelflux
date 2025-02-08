@@ -1,6 +1,8 @@
 package run
 
 import (
+	"fmt"
+
 	"github.com/modelflux/cli/pkg/workflow"
 	"github.com/spf13/viper"
 )
@@ -10,11 +12,14 @@ func Run(workflowName string, cfg *viper.Viper) {
 	if err != nil {
 		panic(err)
 	}
-	w, err := workflow.ValidateAndBuildWorkflow(schema, cfg)
+
+	w := &workflow.Workflow{}
+	err = w.ValidateAndBuildWorkflow(schema, cfg)
 	if err != nil {
 		panic(err)
 	}
 
+	fmt.Println("Initializing workflow")
 	err = w.Init()
 	if err != nil {
 		panic(err)

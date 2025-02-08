@@ -1,31 +1,22 @@
-models:
-  deep-seek:
-    identifier: "ollama"
-    options:
-      model: "deepseek-r1:7b"
-  llama-small:
-    identifier: "ollama"
-    options:
-      model: "llama3.2:1b"
-tools:
-  write-to-file:
-    identifier: "text-file-writer"
-task:
-  name: "Generate and Checkout Output"
-  steps:
-    - name: "Generate Output"
-      model: "llama-small"
-      id: "step-1"
-      parameters:
-        input: "What is 1+1 equal?"
-    - name: "Check Output"
-      model: "llama-small"
-      id: "step-2"
-      parameters:
-        input: "Is this step correct? ${{step-1.output}}"
-    - name: "Write to File"
-      tool: "write-to-file"
-      id: "step-3"
-      parameters:
-        filepath: ".out/output.txt"
-        content: "${{step-2.output}}"
+name: Hacker news daily summary
+steps:
+  - id: fetch-html 
+    name: Fetch new.ycombinator.com front page HTML
+    uses: "modelflux/fileio"
+    with: 
+      operation: "read"
+      filepath: "README.md"
+    # Currently every step returns a single output of type string that is available by default to future steps
+
+  - id: extract-stories
+    name: Extract and parse the top 3 stories from HTML
+    model:
+      provider: ollama
+      options: 
+        model: "llama3.2:3b"
+    run: generate # If uses is not provided, you can use the default operations available with the software
+    with:
+      template: "Summarize the top 3 stories from the following into one succinct paragraph using a MAXIMUM OF 5 sentences: {html}"
+      vars:
+        html: ${{ fetch-html.output }}
+    log: true # This will log the output of the step to the console

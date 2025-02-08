@@ -4,28 +4,23 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/modelflux/cli/pkg/tool"
+	"github.com/modelflux/cli/pkg/model"
 	"gopkg.in/yaml.v3"
 )
 
 type WorkflowSchema struct {
-	Models map[string]tool.ToolConfiguration `yaml:"models"`
-	Tools  map[string]tool.ToolConfiguration `yaml:"tools"`
-	Task   Task                              `yaml:"task"`
-}
-
-type Task struct {
 	Name  string `yaml:"name"`
 	Steps []Step `yaml:"steps"`
 }
 
 type Step struct {
-	Name       string                 `yaml:"name"`
-	ID         string                 `yaml:"id,omitempty"`
-	Model      string                 `yaml:"model,omitempty"`
-	Tool       string                 `yaml:"tool,omitempty"`
-	Parameters map[string]interface{} `yaml:"parameters,omitempty"`
-	Output     string                 `yaml:"output,omitempty"`
+	ID    string                   `yaml:"id,omitempty"`
+	Name  string                   `yaml:"name"`
+	Uses  string                   `yaml:"uses,omitempty"`
+	Model model.ModelConfiguration `yaml:"model,omitempty"`
+	Run   string                   `yaml:"run,omitempty"`  // Run is an operation to be preformed by the model
+	With  map[string]interface{}   `yaml:"with,omitempty"` // With is the parameters to be passed to the tool.
+	Log   bool                     `yaml:"log,omitempty"`  // Log is a flag wether the output of the tool should be logged to the console.
 }
 
 func LoadSchema(workflowName string) (*WorkflowSchema, error) {
