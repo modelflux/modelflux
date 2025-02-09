@@ -1,22 +1,33 @@
 name: Hacker news daily summary
 steps:
+  - id: out-template
+    name: Read the output template for the AI workflow
+    uses: "modelflux/fileio"
+    with:
+      operation: read
+      filepath: "workflows/hacker-news-daily-summary-template.txt"
+
   - id: fetch-html 
     name: Fetch new.ycombinator.com front page HTML
-    uses: "modelflux/fileio"
+    uses: "modelflux/fetch"
     with: 
-      operation: "read"
-      filepath: "README.md"
+      url: "https://news.ycombinator.com/"
     # Currently every step returns a single output of type string that is available by default to future steps
 
-  - id: extract-stories
-    name: Extract and parse the top 3 stories from HTML
+  - id: get-text
+    name: Extract text from HTML
+    uses: "modelflux/htmlparser"
+    with:
+      html: ${{ fetch-html.output }}
+
+  - name: Get the top 3 stories
     model:
       provider: ollama
       options: 
         model: "llama3.2:3b"
-    run: generate # If uses is not provided, you can use the default operations available with the software
+    run: generate
     with:
-      template: "Summarize the top 3 stories from the following into one succinct paragraph using a MAXIMUM OF 5 sentences: {html}"
+      template: "${{ out-template.output }}"
       vars:
-        html: ${{ fetch-html.output }}
-    log: true # This will log the output of the step to the console
+        text: ${{ get-text.output }}
+    log: true

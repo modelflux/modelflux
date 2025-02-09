@@ -3,7 +3,9 @@ package tool
 import (
 	"fmt"
 
+	"github.com/modelflux/cli/pkg/fetch"
 	"github.com/modelflux/cli/pkg/fileio"
+	"github.com/modelflux/cli/pkg/htmlparser"
 )
 
 type ToolConfiguration struct {
@@ -21,6 +23,10 @@ func GetTool(name string) (Tool, error) {
 	switch name {
 	case "modelflux/fileio":
 		return &fileio.FileIO{}, nil
+	case "modelflux/fetch":
+		return &fetch.Fetch{}, nil
+	case "modelflux/htmlparser":
+		return &htmlparser.HTMLParser{}, nil
 	default:
 		return nil, fmt.Errorf("tool %s not found", name)
 	}

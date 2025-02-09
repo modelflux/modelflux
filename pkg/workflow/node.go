@@ -1,8 +1,10 @@
 package workflow
 
 import (
+	"encoding/json"
 	"fmt"
 	"regexp"
+	"strings"
 
 	generate "github.com/modelflux/cli/pkg/ai"
 	"github.com/modelflux/cli/pkg/model"
@@ -22,34 +24,76 @@ type WorkflowNode struct {
 	Log       bool
 }
 
-func (n *WorkflowNode) replacePlaceholders(outputs map[string]string) {
-	// Replace placeholders in the parameters
-	for k, v := range n.Params {
-		if s, ok := v.(string); ok {
-			// Identify a placeholder in the string. ${{stepid.output}}
-			regexp := regexp.MustCompile(`\${{([a-zA-Z0-9-]+)\.output}}`)
-			matches := regexp.FindAllStringSubmatch(s, -1)
-			for _, match := range matches {
-				// Replace the placeholder with the output value.
-				if len(match) == 2 {
-					if output, ok := outputs[match[1]]; ok {
-						s = regexp.ReplaceAllString(s, output)
-						n.Params[k] = s
-					}
-				}
-			}
-		}
+// replacePlaceholders processes the WorkflowNode's Params by scanning for placeholders
+// in the JSON-encoded representation of the Params map and substituting them with values
+// from the provided outputs map.
+//
+// Placeholders must follow the format:
+//
+//	${{ <identifier>.output }}
+//
+// The <identifier> component can include alphanumeric characters and dashes.
+// For each detected placeholder, the function looks up the corresponding value from outputs.
+// The replacement value is JSON-escaped to ensure that any special characters are handled properly.
+//
+// After all replacements are completed, the modified JSON string is unmarshaled back into the Params map.
+// The function returns an error if marshalling or unmarshalling fails.
+func (n *WorkflowNode) replacePlaceholders(outputs map[string]string) error {
+	// Marshal the entire Params map.
+	b, err := json.Marshal(n.Params)
+	if err != nil {
+		return fmt.Errorf("failed to marshal Params: %v", err)
 	}
+	asStr := string(b)
+
+	// Regexp that allows spaces in the placeholder name.
+	// Example matching: ${{ somestep.output }}
+	placeholderRe := regexp.MustCompile(`\${{\s*([a-zA-Z0-9-]+)\.output\s*}}`)
+
+	// Find and replace all placeholders.
+	asStr = placeholderRe.ReplaceAllStringFunc(asStr, func(match string) string {
+		// Extract the identifier.
+		submatches := placeholderRe.FindStringSubmatch(match)
+		if len(submatches) != 2 {
+			return match
+		}
+		key := strings.TrimSpace(submatches[1])
+		if replacement, ok := outputs[key]; ok {
+			// Marshal the replacement to correctly escape special characters.
+			escaped, err := json.Marshal(replacement)
+			if err != nil {
+				// In case of error, use the raw replacement.
+				return replacement
+			}
+			// json.Marshal returns a quoted string, so remove the first and last character.
+			escapedStr := string(escaped)
+			if len(escapedStr) >= 2 {
+				return escapedStr[1 : len(escapedStr)-1]
+			}
+			return escapedStr
+		}
+		return match
+	})
+
+	// Unmarshal the replaced JSON string back into n.Params.
+	var newParams map[string]interface{}
+	if err := json.Unmarshal([]byte(asStr), &newParams); err != nil {
+		return fmt.Errorf("failed to unmarshal modified Params: %v", err)
+	}
+	n.Params = newParams
+	return nil
 }
-
 func (n *WorkflowNode) Run(outputs map[string]string) (string, error) {
-	fmt.Println("Running step:", n.StepName)
-
-	// Replace placeholders in the parameters
-	n.replacePlaceholders(outputs)
-
+	// fmt.Println("Running step:", n.StepName)
 	var output string
 	var err error
+
+	// Replace placeholders in the parameters
+	err = n.replacePlaceholders(outputs)
+	if err != nil {
+		return "", err
+	}
+
 	if n.Tool != nil {
 		output, err = n.Tool.Run(n.Params)
 	} else if n.Model != nil {
@@ -63,7 +107,11 @@ func (n *WorkflowNode) Run(outputs map[string]string) (string, error) {
 	}
 
 	n.Output = output
-	fmt.Println("Output:", n.Output)
+	if n.Log {
+		fmt.Println("--------------------")
+		fmt.Println(n.Output)
+		fmt.Println("--------------------")
+	}
 
 	return n.Next, nil
 }

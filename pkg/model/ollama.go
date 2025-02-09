@@ -36,7 +36,6 @@ func (o *OllamaModel) ValidateAndSetOptions(uOptions map[string]interface{}, cfg
 }
 
 func (o *OllamaModel) Init() error {
-	fmt.Println("Here")
 	client, err := api.ClientFromEnvironment()
 
 	if err != nil {
@@ -44,7 +43,7 @@ func (o *OllamaModel) Init() error {
 	}
 	ctx := context.Background()
 
-	fmt.Printf("Checking if model %s is downloaded: ", o.options.Model)
+	// fmt.Printf("Checking if model %s is downloaded: ", o.options.Model)
 
 	isDownloaded := false
 
@@ -60,7 +59,7 @@ func (o *OllamaModel) Init() error {
 	}
 
 	if isDownloaded {
-		fmt.Println("Model already downloaded")
+		// fmt.Println("Model already downloaded")
 		return nil
 	}
 
@@ -68,7 +67,7 @@ func (o *OllamaModel) Init() error {
 		Model: o.options.Model,
 	}
 
-	fmt.Println("Model not downloaded, downloading now")
+	// fmt.Println("Model not downloaded, downloading now")
 	progress := 0
 	progressFunc := func(resp api.ProgressResponse) error {
 		status := resp.Status
