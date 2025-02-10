@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/modelflux/cli/pkg/run"
+	"github.com/modelflux/modelflux/pkg/run"
 	"github.com/spf13/cobra"
 )
 

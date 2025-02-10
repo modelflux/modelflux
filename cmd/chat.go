@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/modelflux/cli/pkg/model"
+	"github.com/modelflux/modelflux/pkg/model"
 	"github.com/spf13/cobra"
 )
 

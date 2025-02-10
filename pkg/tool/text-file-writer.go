@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/modelflux/cli/pkg/util"
+	"github.com/modelflux/modelflux/pkg/util"
 )
 
 type TextFileWriterParameters struct {

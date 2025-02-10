@@ -5,9 +5,9 @@ import (
 	"log"
 	"strings"
 
-	"github.com/modelflux/cli/pkg/load"
-	"github.com/modelflux/cli/pkg/model"
-	"github.com/modelflux/cli/pkg/tool"
+	"github.com/modelflux/modelflux/pkg/load"
+	"github.com/modelflux/modelflux/pkg/model"
+	"github.com/modelflux/modelflux/pkg/tool"
 )
 
 func Run(workflowName string) {

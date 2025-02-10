@@ -35,6 +35,8 @@ github.com/magiconair/properties v1.8.7 h1:IeQXZAiQcpL9mgcAe1Nu6cX9LLw6ExEHKjN0V
 github.com/magiconair/properties v1.8.7/go.mod h1:Dhd985XPs7jluiymwWYZ0G4Z61jb3vdS329zhj2hYo0=
 github.com/mitchellh/mapstructure v1.5.0 h1:jeMsZIYE/09sWLaz43PL7Gy6RuMjD2eJVyuac5Z2hdY=
 github.com/mitchellh/mapstructure v1.5.0/go.mod h1:bFUtVrKA4DC2yAKiSyO/QUcy7e+RRV2QTWOzhPopBRo=
+github.com/modelflux/modelflux v0.0.0-20250206211320-974b393d2fcb h1:TaNwrm9jKwUmjiRokvIFy7OHLbhmrEFxPtH+ti4AY24=
+github.com/modelflux/modelflux v0.0.0-20250206211320-974b393d2fcb/go.mod h1:Yp+Iu+kXZThPM1jNQJduodtoYtK+3lXq74vTXrzD9D0=
 github.com/ollama/ollama v0.5.7 h1:YFxF3UYc3TbOH/j/OhJoxl4LOvPQRcuKUdI5txs/pkc=
 github.com/ollama/ollama v0.5.7/go.mod h1:bBFyCnwY8C8zCas/t9ParGkmKSSM6H31fV/37K9kifo=
 github.com/openai/openai-go v0.1.0-alpha.51 h1:/iuF8QoWt4x9yoEr6AdMsSBc2SglamxA/a7wClrDrqw=
