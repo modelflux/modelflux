@@ -3,6 +3,7 @@ package workflow
 import (
 	"fmt"
 	"os"
+	"path"
 
 	"github.com/modelflux/cli/pkg/model"
 	"gopkg.in/yaml.v3"
@@ -25,7 +26,21 @@ type Step struct {
 
 func LoadSchema(workflowName string) (*WorkflowSchema, error) {
 	fmt.Println("LOADING WORKFLOW:", workflowName)
-	workflowPath := fmt.Sprintf("workflows/%s.yaml", workflowName)
+
+	workflowsDir := path.Join(".modelflux", "workflows")
+	workflowFile := workflowName + ".yaml"
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return nil, err
+	}
+	workflowPath := path.Join(home, workflowsDir, workflowFile)
+
+	// clean up the path
+	workflowPath = path.Clean(workflowPath)
+
+	// Optionally comment out the above code and use the following code to load the workflow from the current directory
+	// workflowPath := fmt.Sprintf("workflows/%s.yaml", workflowName)
+
 	data, err := os.ReadFile(workflowPath)
 	if err != nil {
 		return nil, err
