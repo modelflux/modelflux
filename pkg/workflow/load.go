@@ -24,7 +24,7 @@ type Step struct {
 }
 
 func LoadSchema(workflowName string) (*WorkflowSchema, error) {
-	// fmt.Println("Loading workflow:", workflowName)
+	fmt.Println("LOADING WORKFLOW:", workflowName)
 	workflowPath := fmt.Sprintf("workflows/%s.yaml", workflowName)
 	data, err := os.ReadFile(workflowPath)
 	if err != nil {

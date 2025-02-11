@@ -11,6 +11,7 @@ import (
 )
 
 func (wf *Workflow) ValidateAndBuildWorkflow(data *WorkflowSchema, cfg *viper.Viper) error {
+	fmt.Println("VALIDATING WORKFLOW:", data.Name)
 	wf.name = data.Name
 	wf.graph = make(map[string]*WorkflowNode)
 	wf.outputs = make(map[string]string)

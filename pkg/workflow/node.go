@@ -3,9 +3,12 @@ package workflow
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 	"regexp"
 	"strings"
+	"time"
 
+	"github.com/briandowns/spinner"
 	generate "github.com/modelflux/cli/pkg/ai"
 	"github.com/modelflux/cli/pkg/model"
 	"github.com/modelflux/cli/pkg/tool"
@@ -84,13 +87,20 @@ func (n *WorkflowNode) replacePlaceholders(outputs map[string]string) error {
 	return nil
 }
 func (n *WorkflowNode) Run(outputs map[string]string) (string, error) {
-	// fmt.Println("Running step:", n.StepName)
+	s := spinner.New(spinner.CharSets[14], 100*time.Millisecond, spinner.WithWriter(os.Stdout))
+	s.Prefix = "PROCESSING STEP: " + n.StepName + " "
+	s.Start()
+
+	fmt.Println("-------------------------")
+	fmt.Println("STEP:", n.StepName)
 	var output string
 	var err error
 
 	// Replace placeholders in the parameters
 	err = n.replacePlaceholders(outputs)
 	if err != nil {
+		s.FinalMSG = "STEP FAILED ❌\n"
+		s.Stop()
 		return "", err
 	}
 
@@ -103,15 +113,18 @@ func (n *WorkflowNode) Run(outputs map[string]string) (string, error) {
 	}
 
 	if err != nil {
+		s.FinalMSG = "STEP FAILED ❌\n"
+		s.Stop()
 		return "", err
 	}
 
 	n.Output = output
+	s.FinalMSG = "COMPLETED SUCCESSFULLY ✅\n"
+	s.Stop()
 	if n.Log {
-		fmt.Println("--------------------")
+		fmt.Println()
 		fmt.Println(n.Output)
-		fmt.Println("--------------------")
+		fmt.Println()
 	}
-
 	return n.Next, nil
 }

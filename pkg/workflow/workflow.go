@@ -26,7 +26,7 @@ func (wf *Workflow) Init() error {
 }
 
 func (wf *Workflow) Run() error {
-	fmt.Println("Running workflow", wf.name)
+	fmt.Println("RUNNING WORKFLOW", wf.name)
 	// Starting at the root node, run each node in the graph
 	// until there are no more nodes to run.
 	n := wf.rootNode
@@ -39,6 +39,7 @@ func (wf *Workflow) Run() error {
 		}
 		wf.outputs[node.ID] = node.Output
 	}
-	fmt.Println(("Workflow complete"))
+	fmt.Println("-------------------------")
+	fmt.Println("WORKFLOW COMPLETED SUCCESSFULLY 🎉")
 	return nil
 }
