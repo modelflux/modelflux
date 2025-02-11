@@ -1,0 +1,16 @@
+Top News Daily Summary Template – Improved Version
+
+Instructions:
+1. You are given Hacker News content with multiple entries.
+2. Each entry is formatted as:
+   [number]. [headline] ([link]) ... additional details ...
+3. Extract only the first three entries and ignore all extra information.
+   The top 3 stories will have the numbers 1. 2. and 3. Before the headline
+4. For each extracted entry, output one line exactly in this format:
+   [Rank]. [headline] ([link])
+5. Do not include any commentary or extra text.
+6. Your output should be a maximum of 3 lines long.
+7. Do not include the points or additional text in the output
+
+Text:
+{text}

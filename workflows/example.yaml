@@ -1,34 +1,33 @@
-name: "Simple Example - Generate Output"
-models:
-  deep-seek:
-    identifier: "ollama"
-    options:
-      model: "deepseek-r1:7b"
-  llama-small:
-    identifier: "ollama"
-    options:
-      model: "llama3.2:1b"
-tools:
-  read-me:
-    identifier: "text-file-reader"
-  write-me:
-    identifier: "text-file-writer"
-task:
-  name: "Summarize Read Me"
-  steps:
-    - name: "Generate Output"
-      model: "llama-small"
-      id: "step-1"
-      parameters:
-        prompt: "What is 1+1 equal?"
-    - name: "Read the Read Me File"
-      tool: "read-me"
-      id: "step-2"
-      parameters:
-        filepath: "README.md"
-    - name: "Write the Read Me Summary"
-      tool: "write-me"
-      id: "step-3"
-      parameters:
-        filepath: ".out/readme-summary.txt"
-        content: "# This is a summary of the Read Me file."
+name: Hacker news daily summary
+steps:
+  - id: out-template
+    name: Read the output template for the AI workflow
+    uses: "modelflux/fileio"
+    with:
+      operation: read
+      filepath: "workflows/hacker-news-daily-summary-template.txt"
+
+  - id: fetch-html 
+    name: Fetch new.ycombinator.com front page HTML
+    uses: "modelflux/fetch"
+    with: 
+      url: "https://news.ycombinator.com/"
+    # Currently every step returns a single output of type string that is available by default to future steps
+
+  - id: get-text
+    name: Extract text from HTML
+    uses: "modelflux/htmlparser"
+    with:
+      html: ${{ fetch-html.output }}
+
+  - name: Get the top 3 stories
+    model:
+      provider: ollama
+      options: 
+        model: "llama3.2:3b"
+    run: generate
+    with:
+      template: "${{ out-template.output }}"
+      vars:
+        text: ${{ get-text.output }}
+    log: true
