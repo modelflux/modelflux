@@ -5,27 +5,45 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/modelflux/cli/pkg/util"
 	"github.com/ollama/ollama/api"
 	"github.com/spf13/viper"
 )
 
-type OllamaModel struct {
-	Model string
+type ollamaModelOptions struct {
+	Model string `yaml:"model"`
 }
 
-func (o *OllamaModel) New(cfg *viper.Viper) error {
-	client, err := api.ClientFromEnvironment()
+type OllamaModel struct {
+	options ollamaModelOptions
+}
+
+func (o *OllamaModel) ValidateAndSetOptions(uOptions map[string]interface{}, cfg *viper.Viper) error {
+	// Create a struct from the map using the util package.
+	options, err := util.BuildStruct[ollamaModelOptions](uOptions)
 
 	if err != nil {
 		return err
 	}
 
-	ctx := context.Background()
-	req := &api.PullRequest{
-		Model: o.Model,
+	if options.Model == "" {
+		return fmt.Errorf("missing required option model for ollama model")
 	}
 
-	fmt.Printf("Checking if model %s is downloaded: ", o.Model)
+	o.options = options
+
+	return nil
+}
+
+func (o *OllamaModel) Init() error {
+	client, err := api.ClientFromEnvironment()
+
+	if err != nil {
+		return err
+	}
+	ctx := context.Background()
+
+	// fmt.Printf("Checking if model %s is downloaded: ", o.options.Model)
 
 	isDownloaded := false
 
@@ -33,7 +51,7 @@ func (o *OllamaModel) New(cfg *viper.Viper) error {
 
 	if err == nil {
 		for _, model := range resp.Models {
-			if model.Name == o.Model {
+			if model.Name == o.options.Model {
 				isDownloaded = true
 				break
 			}
@@ -41,11 +59,15 @@ func (o *OllamaModel) New(cfg *viper.Viper) error {
 	}
 
 	if isDownloaded {
-		fmt.Println("Model already downloaded")
+		// fmt.Println("Model already downloaded")
 		return nil
 	}
 
-	fmt.Println("Model not downloaded, downloading now")
+	req := &api.PullRequest{
+		Model: o.options.Model,
+	}
+
+	// fmt.Println("Model not downloaded, downloading now")
 	progress := 0
 	progressFunc := func(resp api.ProgressResponse) error {
 		status := resp.Status
@@ -75,14 +97,14 @@ func (o *OllamaModel) Generate(input string) (string, error) {
 		log.Fatal(err)
 	}
 	req := &api.GenerateRequest{
-		Model:  o.Model,
+		Model:  o.options.Model,
 		Prompt: input,
 
 		// Set stream to false to get a single response
 		Stream: new(bool),
 	}
 
-	ctx := context.TODO()
+	ctx := context.Background()
 
 	response := ""
 	respFunc := func(resp api.GenerateResponse) error {
