@@ -10,7 +10,8 @@ import (
 )
 
 type Config struct {
-	Model map[string]string `yaml:"model"`
+	Model       map[string]string `yaml:"model"`
+	RegistryUrl string            `yaml:"registryUrl"`
 }
 
 // Initializes the config instance. If the configuration file is not found, it creates a default configuration and writes it to
@@ -36,6 +37,7 @@ func InitConfig(cfg *viper.Viper) {
 				"deployment": "",
 				"version":    "",
 			})
+			cfg.Set("registryUrl", "http://localhost:3000/api")
 			if err := os.MkdirAll(configPath, os.ModePerm); err != nil {
 				fmt.Println("Failed to create config directory, ", err)
 			}
