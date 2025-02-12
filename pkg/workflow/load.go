@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/modelflux/cli/pkg/model"
+	"github.com/modelflux/modelflux/pkg/model"
 	"gopkg.in/yaml.v3"
 )
 

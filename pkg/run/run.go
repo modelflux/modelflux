@@ -1,7 +1,7 @@
 package run
 
 import (
-	"github.com/modelflux/cli/pkg/workflow"
+	"github.com/modelflux/modelflux/pkg/workflow"
 	"github.com/spf13/viper"
 )
 

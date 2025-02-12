@@ -3,9 +3,9 @@ package tool
 import (
 	"fmt"
 
-	"github.com/modelflux/cli/pkg/fetch"
-	"github.com/modelflux/cli/pkg/fileio"
-	"github.com/modelflux/cli/pkg/htmlparser"
+	"github.com/modelflux/modelflux/pkg/fetch"
+	"github.com/modelflux/modelflux/pkg/fileio"
+	"github.com/modelflux/modelflux/pkg/htmlparser"
 )
 
 type ToolConfiguration struct {

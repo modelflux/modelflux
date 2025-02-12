@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/modelflux/cli/pkg/util"
+	"github.com/modelflux/modelflux/pkg/util"
 	"github.com/ollama/ollama/api"
 	"github.com/spf13/viper"
 )

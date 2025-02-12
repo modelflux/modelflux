@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/modelflux/cli/pkg/util"
+	"github.com/modelflux/modelflux/pkg/util"
 	"github.com/openai/openai-go"
 	"github.com/openai/openai-go/azure"
 	"github.com/spf13/viper"

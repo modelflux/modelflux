@@ -3,10 +3,10 @@ package workflow
 import (
 	"fmt"
 
-	generate "github.com/modelflux/cli/pkg/ai"
-	"github.com/modelflux/cli/pkg/model"
-	"github.com/modelflux/cli/pkg/tool"
-	"github.com/modelflux/cli/pkg/util"
+	generate "github.com/modelflux/modelflux/pkg/ai"
+	"github.com/modelflux/modelflux/pkg/model"
+	"github.com/modelflux/modelflux/pkg/tool"
+	"github.com/modelflux/modelflux/pkg/util"
 	"github.com/spf13/viper"
 )
 

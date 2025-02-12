@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/modelflux/cli/pkg/pull"
+	"github.com/modelflux/modelflux/pkg/pull"
 	"github.com/spf13/cobra"
 )
 
