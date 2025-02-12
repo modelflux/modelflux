@@ -3,6 +3,7 @@ package workflow
 import (
 	"fmt"
 	"os"
+	"path"
 
 	"github.com/modelflux/modelflux/pkg/model"
 	"gopkg.in/yaml.v3"
@@ -23,9 +24,24 @@ type Step struct {
 	Log   bool                     `yaml:"log,omitempty"`  // Log is a flag wether the output of the tool should be logged to the console.
 }
 
-func LoadSchema(workflowName string) (*WorkflowSchema, error) {
+func LoadSchema(workflowName string, local bool) (*WorkflowSchema, error) {
 	fmt.Println("LOADING WORKFLOW:", workflowName)
-	workflowPath := fmt.Sprintf("workflows/%s.yaml", workflowName)
+
+	var workflowPath string
+	if local {
+		workflowPath = workflowName + ".yaml"
+		workflowPath = path.Clean(workflowPath)
+	} else {
+		workflowsDir := path.Join(".modelflux", "workflows")
+		workflowFile := workflowName + ".yaml"
+		home, err := os.UserHomeDir()
+		if err != nil {
+			return nil, err
+		}
+		workflowPath = path.Join(home, workflowsDir, workflowFile)
+		workflowPath = path.Clean(workflowPath)
+	}
+
 	data, err := os.ReadFile(workflowPath)
 	if err != nil {
 		return nil, err
