@@ -5,8 +5,12 @@ import (
 	"github.com/spf13/viper"
 )
 
-func Run(workflowName string, cfg *viper.Viper) {
-	schema, err := workflow.LoadSchema(workflowName)
+type RunFlags struct {
+	Local bool
+}
+
+func Run(workflowName string, cfg *viper.Viper, flags *RunFlags) {
+	schema, err := workflow.LoadSchema(workflowName, flags.Local)
 	if err != nil {
 		panic(err)
 	}
