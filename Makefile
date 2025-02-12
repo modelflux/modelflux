@@ -1,6 +1,6 @@
 OUTDIR ?= $(CURDIR)/_output
 BINARYNAME ?= mf
-PACKAGE := github.com/modelflux/cli
+PACKAGE := github.com/modelflux/modelflux
 
 build:
 	go build -o $(OUTDIR)/bin/$(BINARYNAME) $(PACKAGE)/cmd

@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/modelflux/cli/pkg/util"
+	"github.com/modelflux/modelflux/pkg/util"
 )
 
 type fileIOInputs struct {

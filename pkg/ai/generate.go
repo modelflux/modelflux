@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/modelflux/cli/pkg/model"
-	"github.com/modelflux/cli/pkg/util"
+	"github.com/modelflux/modelflux/pkg/model"
+	"github.com/modelflux/modelflux/pkg/util"
 )
 
 type GenerateParameters struct {

@@ -9,9 +9,9 @@ import (
 	"time"
 
 	"github.com/briandowns/spinner"
-	generate "github.com/modelflux/cli/pkg/ai"
-	"github.com/modelflux/cli/pkg/model"
-	"github.com/modelflux/cli/pkg/tool"
+	generate "github.com/modelflux/modelflux/pkg/ai"
+	"github.com/modelflux/modelflux/pkg/model"
+	"github.com/modelflux/modelflux/pkg/tool"
 )
 
 // A WorkflowNode represents a step in the workflow.

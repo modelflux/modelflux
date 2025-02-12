@@ -1,4 +1,4 @@
-module github.com/modelflux/cli
+module github.com/modelflux/modelflux
 
 go 1.23.5
 

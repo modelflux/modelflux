@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/modelflux/cli/pkg/util"
+	"github.com/modelflux/modelflux/pkg/util"
 	"golang.org/x/net/html"
 )
 

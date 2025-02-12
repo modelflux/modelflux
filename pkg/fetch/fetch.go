@@ -5,7 +5,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/modelflux/cli/pkg/util"
+	"github.com/modelflux/modelflux/pkg/util"
 )
 
 type FetchInputs struct {
