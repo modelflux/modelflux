@@ -14,7 +14,7 @@ var runCmd = &cobra.Command{
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		name := args[0]
-		flags := &run.RunFlags{
+		flags := &run.RunOptions{
 			Local: Local,
 		}
 
