@@ -7,18 +7,16 @@ import (
 	"strings"
 )
 
-func List() {
+func List() error {
 	home, err := os.UserHomeDir()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Failed to get user home directory: %v\n", err)
-		return
+		return err
 	}
 	dir := path.Join(home, ".modelflux", "workflows")
 	repos, err := os.ReadDir(dir)
 
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Failed to read directory: %v\n", err)
-		return
+		return err
 	}
 
 	// Read each direcotry in the workflows directory
@@ -28,8 +26,7 @@ func List() {
 			workflowDir := path.Join(dir, repo.Name())
 			workflowFiles, err := os.ReadDir(workflowDir)
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "Failed to read directory: %v\n", err)
-				return
+				return err
 			}
 			for _, wf := range workflowFiles {
 				// Remove the .yaml extension
@@ -40,4 +37,5 @@ func List() {
 			}
 		}
 	}
+	return nil
 }
