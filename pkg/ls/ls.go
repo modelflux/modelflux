@@ -1,21 +1,28 @@
 package ls
 
 import (
+	"errors"
 	"fmt"
+	"io/fs"
 	"os"
 	"path"
 	"strings"
+
+	"github.com/modelflux/modelflux/pkg/config"
 )
 
 func List() error {
-	home, err := os.UserHomeDir()
+	dir, err := config.GetWorkflowsPath()
 	if err != nil {
 		return err
 	}
-	dir := path.Join(home, ".modelflux", "workflows")
 	repos, err := os.ReadDir(dir)
 
 	if err != nil {
+		if errors.Is(err, fs.ErrNotExist) {
+			fmt.Println("No workflows to list")
+			return nil
+		}
 		return err
 	}
 

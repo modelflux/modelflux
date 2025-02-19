@@ -3,8 +3,9 @@ package workflow
 import (
 	"fmt"
 	"os"
-	"path"
+	"path/filepath"
 
+	"github.com/modelflux/modelflux/pkg/config"
 	"github.com/modelflux/modelflux/pkg/model"
 	"gopkg.in/yaml.v3"
 )
@@ -30,16 +31,15 @@ func LoadSchema(workflowName string, local bool) (*WorkflowSchema, error) {
 	var workflowPath string
 	if local {
 		workflowPath = workflowName + ".yaml"
-		workflowPath = path.Clean(workflowPath)
+		workflowPath = filepath.Clean(workflowPath)
 	} else {
-		workflowsDir := path.Join(".modelflux", "workflows")
 		workflowFile := workflowName + ".yaml"
-		home, err := os.UserHomeDir()
+		workflowFile = filepath.Clean(workflowFile) // Remove any ../ from the path
+		workflowsDir, err := config.GetWorkflowsPath()
 		if err != nil {
 			return nil, err
 		}
-		workflowPath = path.Join(home, workflowsDir, workflowFile)
-		workflowPath = path.Clean(workflowPath)
+		workflowPath = filepath.Join(workflowsDir, workflowFile)
 	}
 
 	data, err := os.ReadFile(workflowPath)
