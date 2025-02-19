@@ -1,6 +1,6 @@
 module github.com/modelflux/modelflux
 
-go 1.23.5
+go 1.24.0
 
 require (
 	github.com/ollama/ollama v0.5.7
