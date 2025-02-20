@@ -1,6 +1,6 @@
 # Contributing 💖
 
-Thank you for your interest in contributing to this project! We welcome contributions of all kinds, including bug reports, feature requests, and design ideas. We are at an early stage of the development process so breaking changes may occur often. We appreciate your patience and understanding.
+Welcome to the repo and thank you for your interest in contributing to this project! We welcome contributions of all kinds, including bug reports, feature requests, and design ideas. We are at an early stage of the development process so breaking changes may occur often. We appreciate your patience and understanding.
 
 ## How to Contribute
 
