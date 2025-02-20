@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/modelflux/cli/pkg/model"
+	"github.com/modelflux/modelflux/pkg/model"
 	"github.com/spf13/cobra"
 )
 
@@ -14,18 +14,18 @@ var chatCmd = &cobra.Command{
 	Short: "Send a message to the model. This is just a test command.",
 	Run: func(cmd *cobra.Command, args []string) {
 		var input = args[0]
-		var m model.Model
-
-		if Model == "azure" {
-			m = &model.AzureOpenAIModel{}
-		} else if Model == "openai" {
-			m = &model.OpenAIModel{}
-		} else {
-			fmt.Printf("model %s not found", Model)
+		m, err := model.GetModel(Model)
+		if err != nil {
+			fmt.Printf("error getting model: %v", err)
+			return
+		}
+		err = m.ValidateAndSetOptions(nil, Config)
+		if err != nil {
+			fmt.Printf("error validating options: %v", err)
 			return
 		}
 
-		if err := m.New(Config); err != nil {
+		if err := m.Init(); err != nil {
 			fmt.Printf("error initializing model: %v", err)
 			return
 		}
@@ -43,5 +43,5 @@ var chatCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(chatCmd)
 
-	chatCmd.Flags().StringVarP(&Model, "model", "m", "azure", "Model to use (required)")
+	chatCmd.Flags().StringVarP(&Model, "model", "m", "azure-openai", "Model to use (required)")
 }

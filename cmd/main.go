@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/modelflux/cli/pkg/config"
+	"github.com/modelflux/modelflux/pkg/config"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )

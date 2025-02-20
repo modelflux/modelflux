@@ -22,7 +22,7 @@ Run the workflow in the following sequence of steps:
 ```mermaid
 graph TD;
     A[Parse the workflow file]
-    subgraph B ["Create Pipeline"]
+    subgraph B ["Build the Workflow"]
         direction LR 
         B1[Validate the workflow schema]
         B2[Generate a workflow graph]
@@ -35,8 +35,6 @@ graph TD;
 
 For simplicity, workflow steps will be run in sequence. In the future, we can allow for more dynamic pipelines: see [Future improvements](#future-improvements).
 
-The implementation should create a pipeline to run the workflow. As we validate the workflow schema.
-
 ### Pros
 
 By following this sequence, we ensure that the workflow is valid and that the tools and models are initialized correctly before running the workflow. This approach attempts to minimize the chances of errors during the workflow run, which could potentially result in partial or incorrect results. This step should be efficient as it is only static analysis of a relatively small file.
@@ -48,9 +46,9 @@ The workflow may take longer to start running as it has to go through the valida
 ### Tasks
 
 - [x] Parse the workflow file (YAML)
-- [ ] Validate the Workflow Schema
-- [ ] Initialize Tools and Models
-- [ ] Create a pipeline to run the workflow
+- [x] Validate the Workflow Schema
+- [x] Initialize Tools and Models
+- [x] Run the Workflow Steps
 
 ### Considerations
 

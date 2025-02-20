@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/modelflux/cli/pkg/run"
+	"github.com/modelflux/modelflux/pkg/run"
 	"github.com/spf13/cobra"
 )
 
@@ -12,7 +12,7 @@ var runCmd = &cobra.Command{
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		name := args[0]
-		run.Run(name)
+		run.Run(name, Config)
 	},
 }
 
