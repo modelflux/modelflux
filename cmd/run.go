@@ -5,6 +5,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var Local bool
+
 // runCmd represents the run command
 var runCmd = &cobra.Command{
 	Use:   "run [workflowName]",
@@ -12,12 +14,19 @@ var runCmd = &cobra.Command{
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		name := args[0]
-		run.Run(name, Config)
+		flags := &run.RunOptions{
+			Local: Local,
+		}
+
+		run.Run(name, Config, flags)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(runCmd)
+
+	// Add local flag -l for running locally.
+	runCmd.Flags().BoolVarP(&Local, "local", "l", false, "Run a local workflow file")
 
 	// Here you will define your flags and configuration settings.
 

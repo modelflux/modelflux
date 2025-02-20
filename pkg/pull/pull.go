@@ -7,7 +7,7 @@ import (
 	"os"
 	"path"
 
-	"github.com/spf13/cobra"
+	"github.com/modelflux/modelflux/pkg/config"
 	"github.com/spf13/viper"
 )
 
@@ -23,9 +23,12 @@ func Pull(repo string, workflow string, tag string, cfg *viper.Viper) error {
 		return fmt.Errorf("failed to pull workflow: %s", resp.Status)
 	}
 
-	home, err := os.UserHomeDir()
-	cobra.CheckErr(err)
-	saveDir := path.Join(home, ".modelflux", "workflows", repo)
+	workflowsDir, err := config.GetWorkflowsPath()
+	if err != nil {
+		return err
+	}
+
+	saveDir := path.Join(workflowsDir, repo)
 	fileName := workflow + ":" + tag + ".yaml"
 
 	respBody, err := io.ReadAll(resp.Body)
