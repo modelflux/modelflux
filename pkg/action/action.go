@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/modelflux/cli/pkg/model"
+	"github.com/modelflux/modelflux/pkg/model"
 )
 
 type Action[ActionInput string | []string] interface {

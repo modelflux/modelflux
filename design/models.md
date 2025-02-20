@@ -1,6 +1,6 @@
 # Model
 
-As a workflow automation system based around AI, the models themselves form the crux of this application.
+As a workflow automation system based around AI, the models themselves form the foundation.
 
 ## Ideals
 
